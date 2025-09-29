@@ -1,0 +1,475 @@
+1) One-liner & Value Prop
+
+Spuds is “Eventbrite × Airbnb for gamers”: a place to host or join casual in-person gaming parties nearby. Guests browse local parties by game, platform, skill vibe, party size, and vibe (chill/competitive/co-op); Hosts create a listing with time, address (hidden until RSVP), capacity, rules, required gear, and optional cost-share.
+
+Primary jobs:
+
+Guests: “Find safe, nearby people to play the games I love—tonight or this weekend.”
+
+Hosts: “Fill seats at my gaming night with the right people and ground rules.”
+
+2) Target Users & Constraints
+
+Guests (18+): console/PC/board-game players looking for IRL sessions.
+
+Hosts (18+): people with a living room/garage, café space, or a small venue.
+
+Safety: soft real-name policy (first name + initial), verified email/phone, ratings, report/ban system, address reveals post-RSVP, optional ID check later.
+
+3) MVP Scope (what ships in v1)
+
+Public landing page (SEO-friendly)
+
+Auth (email magic link or OAuth Google/Discord)
+
+Location-aware Discover (city + radius, map/list)
+
+Party Details (title, date/time, tags, host profile, seat count, rules)
+
+Host flow (create/edit/delete parties, see RSVPs, approve/auto-accept)
+
+RSVP flow (request to join or instant join if enabled)
+
+Messaging (host ↔ guest event chat; global DMs can come later)
+
+Ratings + reports after an event
+
+Basic notifications (email + in-app)
+
+Admin panel (remove parties, ban users, view reports)
+
+Nice-to-have next: payments/cost-share, waitlists, calendar sync, group features, photo uploads.
+
+4) Information Architecture (IA)
+
+/ (Home) – hero, how it works, CTA to browse/host
+
+/discover – search & filters; map + cards
+
+/party/:id – details, RSVP/join, share, report
+
+/host/new – create party (stepper)
+
+/host/parties – manage parties + attendees
+
+/me – profile (games, platforms, bio, city), ratings
+
+/inbox – event chat threads
+
+/login – email magic link or OAuth
+
+/admin – moderate content, users, reports
+
+5) Core User Stories (MVP acceptance criteria)
+Guest
+
+As a guest, I can search by game, platform, date, distance, party size, vibe, beginner-friendly, no-alcohol, BYO-controller.
+
+I can see a map and list of parties, with distance and start time.
+
+I can open Party Details to see host rating, rules, slots left, and required gear.
+
+I can request to join (or auto-join) and receive a confirmation.
+
+I only see the exact address after acceptance.
+
+After attending, I can rate the host/party and report issues.
+
+Host
+
+As a host, I can create a party with:
+
+Title, start & end time, city/area + precise address (masked pre-RSVP)
+
+Max attendees, minimum age, vibe tags
+
+Game(s), platform(s), network needs (LAN/Wi-Fi), BYO gear
+
+House rules (no smoking, quiet after 10pm, etc.)
+
+Join policy: auto-accept or approve-requests
+
+I can edit/cancel the party and message attendees.
+
+I can approve/deny requests and see a roster.
+
+6) Filtering & Search (MVP)
+
+Query params: q, game, platform, start=YYYY-MM-DD, radius=mi, vibe, size_min, size_max, beginner=true|false, byo=true|false, alcohol_free=true|false
+
+Default radius 25 miles; sort by start time ascending and distance.
+
+7) Branding & Copy Blocks (ready to paste)
+
+Name: Spuds
+Tagline (H1): Find IRL gaming parties near you.
+Subhead: Couch co-op, LAN nights, Smash brackets, or board games—meet players like you, nearby.
+Primary CTAs: “Browse parties” / “Host a party”
+Trust bullets: Verified accounts · Ratings & reports · Address shared only after RSVP
+
+How it works (3 steps):
+
+Discover local parties by game, platform, and vibe.
+
+RSVP and get the address once you’re in.
+
+Play together IRL—then rate your experience.
+
+Host checklist (copy):
+
+Choose a date & capacity
+
+Add game/platform tags
+
+Share house rules
+
+Decide auto-join or approvals
+
+Publish in minutes
+
+Footer links: About · Safety · Guidelines · Contact · Terms · Privacy
+
+Color starter (optional):
+
+Spuds Yellow: #FFD97D
+
+Eggplant Purple: #6C63FF
+
+Hot Coral: #FF5C58
+
+Charcoal: #1F1F23
+
+Off-white: #F9F9FB
+
+8) Data Model (SQL-ish, MVP)
+-- Users
+CREATE TABLE users (
+  id UUID PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  display_name TEXT,
+  city TEXT,
+  lat DOUBLE PRECISION,
+  lng DOUBLE PRECISION,
+  bio TEXT,
+  avatar_url TEXT,
+  platforms TEXT[],            -- ["PC","PS5","Switch","Xbox","Tabletop"]
+  games TEXT[],                -- freeform tags
+  rating_avg NUMERIC(3,2) DEFAULT 0,
+  rating_count INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Parties
+CREATE TABLE parties (
+  id UUID PRIMARY KEY,
+  host_id UUID REFERENCES users(id),
+  title TEXT NOT NULL,
+  description TEXT,
+  start_time TIMESTAMPTZ NOT NULL,
+  end_time TIMESTAMPTZ,
+  city TEXT NOT NULL,
+  address TEXT NOT NULL,       -- masked until RSVP accepted
+  lat DOUBLE PRECISION,
+  lng DOUBLE PRECISION,
+  capacity INT NOT NULL,
+  slots_taken INT DEFAULT 0,
+  vibe TEXT[],                 -- ["Chill","Competitive","Co-op","Beginner-friendly"]
+  games TEXT[],                -- ["Smash Ultimate","Mario Kart 8", "Catan"]
+  platforms TEXT[],            -- ["Switch","PC","PS5","Tabletop"]
+  byo_gear BOOLEAN DEFAULT FALSE,
+  alcohol_free BOOLEAN DEFAULT FALSE,
+  min_age INT DEFAULT 18,
+  join_policy TEXT CHECK (join_policy IN ('auto','approve')) DEFAULT 'approve',
+  status TEXT CHECK (status IN ('published','cancelled','completed')) DEFAULT 'published',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- RSVPs
+CREATE TABLE rsvps (
+  id UUID PRIMARY KEY,
+  party_id UUID REFERENCES parties(id),
+  user_id UUID REFERENCES users(id),
+  status TEXT CHECK (status IN ('pending','accepted','declined','cancelled')) DEFAULT 'pending',
+  message TEXT,                -- short intro from guest
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (party_id, user_id)
+);
+
+-- Messages (event chat)
+CREATE TABLE party_messages (
+  id UUID PRIMARY KEY,
+  party_id UUID REFERENCES parties(id),
+  sender_id UUID REFERENCES users(id),
+  body TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Ratings (post-event)
+CREATE TABLE ratings (
+  id UUID PRIMARY KEY,
+  party_id UUID REFERENCES parties(id),
+  rater_id UUID REFERENCES users(id),
+  ratee_id UUID REFERENCES users(id),
+  stars INT CHECK (stars BETWEEN 1 AND 5),
+  comment TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Reports (safety/moderation)
+CREATE TABLE reports (
+  id UUID PRIMARY KEY,
+  reporter_id UUID REFERENCES users(id),
+  party_id UUID REFERENCES parties(id),
+  reported_user_id UUID REFERENCES users(id),
+  reason TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  resolved BOOLEAN DEFAULT FALSE
+);
+
+9) API Contracts (REST, JSON; MVP)
+
+Auth
+
+POST /api/auth/magic-link → { email } → 200 { ok: true }
+
+POST /api/auth/verify → { token } → 200 { jwt, user }
+
+Discover
+
+GET /api/parties?lat&lng&radius=25&start=2025-09-29&game=...&platform=...&vibe=...
+→ 200 { results: PartyCard[], nextCursor }
+
+Party detail
+
+GET /api/parties/:id → 200 PartyDetail
+
+Host create/edit
+
+POST /api/parties → 201 { id }
+
+PATCH /api/parties/:id → 200 { updated: true }
+
+DELETE /api/parties/:id → 204
+
+RSVPs
+
+POST /api/parties/:id/rsvps → { message } → 200 { status: 'pending'|'accepted' }
+
+PATCH /api/rsvps/:id (host approve/deny) → { status } → 200
+
+GET /api/parties/:id/rsvps (host) → 200 { rsvps: [...] }
+
+Messaging (party thread)
+
+GET /api/parties/:id/messages → 200 { messages: [...] }
+
+POST /api/parties/:id/messages → { body } → 201
+
+Ratings/Reports
+
+POST /api/parties/:id/ratings → { stars, comment } → 201
+
+POST /api/parties/:id/reports → { reason, reported_user_id? } → 201
+
+Types (abbreviated)
+
+type PartyCard = {
+  id: string; title: string; start_time: string; city: string;
+  lat: number; lng: number; distance_mi?: number;
+  games: string[]; platforms: string[]; vibe: string[];
+  capacity: number; slots_taken: number; host: HostLite;
+};
+
+type PartyDetail = PartyCard & {
+  description?: string; min_age: number; byo_gear: boolean; alcohol_free: boolean;
+  address_masked: boolean; address?: string; join_policy: 'auto'|'approve';
+  attendees: UserLite[];
+};
+
+type UserLite = { id: string; display_name: string; rating_avg?: number; rating_count?: number; avatar_url?: string; }
+type HostLite = UserLite;
+
+10) Tech Stack (simple + no-code-friendly choices)
+
+Frontend: Next.js (App Router), TypeScript, Tailwind CSS, Mapbox GL JS
+
+Backend: Next.js API routes or lightweight Node/Express (hosted on Vercel/Render)
+
+DB/Auth/File storage: Supabase (Postgres + RLS, Auth, Storage)
+
+Email: Resend or Supabase email for magic links
+
+Maps/Geo: Mapbox (forward geocoding for city to lat/lng)
+
+Payments (later): Stripe (cost-share/host tips)
+
+Analytics: PostHog or Plausible
+
+Image hosting: Supabase Storage
+
+Why: Supabase simplifies auth + DB (you’re not a coder), Next.js/Vercel makes deploys one-click, and this stack is “MVP-friendly.”
+
+11) Security & Privacy (MVP rules)
+
+Show only city/approximate area to non-attendees; reveal full address after accepted RSVP.
+
+Required email verification; optional SMS verification.
+
+Basic rate limiting for party creation and messaging.
+
+Report and ban endpoints; admin can unpublish parties.
+
+12) Moderation Guidelines (UI copy shortcuts)
+
+Prohibited: hate speech, harassment, illegal activities, minors.
+
+Noise/quiet hours respect. Alcohol rules must be explicit if applicable.
+
+One strike for serious offenses; 3 cumulative minor strikes → ban.
+
+13) Notifications (MVP)
+
+Email:
+
+RSVP received (to host)
+
+RSVP accepted/declined (to guest)
+
+Party reminder 24h before start (to attendees)
+
+14) UX: Page-level briefs (what Codex should generate)
+A) Landing Page (/)
+
+Hero with H1, subhead, 2 CTAs (Browse / Host)
+
+“How it works” 3-step grid
+
+“Popular this week” (3–6 cards; static placeholders)
+
+Safety/Trust strip
+
+Footer links
+
+B) Discover (/discover)
+
+Search bar (city), radius slider, date picker (Today / This weekend)
+
+Filters: game, platform, vibe, size range, beginner-friendly, alcohol-free, BYO gear
+
+Map (left desktop) + Card list (right). On mobile: tab between Map/List.
+
+Card elements: title, start date/time, distance, tags, chips for games/platforms, slots left.
+
+C) Party Details (/party/:id)
+
+Title, time, city; tags; vibe chips
+
+Host card (name, rating)
+
+“What to bring” section (controllers, snacks)
+
+House rules
+
+RSVP button (“Request to join” or “Join now” per policy)
+
+Address placeholder: “Exact address shown after you’re accepted”
+
+D) Host: New Party (/host/new)
+
+Stepper: Basics → Games & Gear → House Rules → Review & Publish
+
+Preview card on the side; validation (date required, capacity ≥ 2)
+
+E) Inbox (/inbox?party=:id)
+
+Simple threaded chat scoped to party attendees.
+
+F) Profile (/me)
+
+Avatar, display name, city
+
+Platforms (checkbox set), favorite games (tags)
+
+My ratings (summary)
+
+My parties (as host and guest)
+
+15) Seed Content (for development)
+
+Sample games: Smash Ultimate, Mario Kart 8, Street Fighter 6, Rocket League, Valorant, Catan, D&D 5e
+
+Platforms: Switch, PS5, Xbox, PC, Tabletop
+
+Vibes: Chill, Competitive, Co-op, Beginner-friendly
+
+16) Analytics & Success Metrics
+
+Activation: % users who complete profile + join or host a party in 7 days
+
+Liquidity: avg parties within 25 miles per metro per week
+
+RSVP conversion: party detail → RSVP (%)
+
+Safety: % events with reports < 2%
+
+17) Roadmap (post-MVP)
+
+Payments & host tips (Stripe)
+
+Waitlists + auto-promote
+
+Calendar sync (GCal/Outlook/ICS)
+
+Groups & recurring parties
+
+Photo gallery per party
+
+Trust features (ID/phone verification, badges)
+
+Recommendations (“Because you joined Smash near Royal Oak…”)
+
+18) “Build Me This” Prompts (paste into Codex/Copilot)
+
+Landing page (Next.js + Tailwind):
+
+Build a Next.js (App Router) page at / using Tailwind that renders the Spuds hero (H1/Subhead/CTAs), a “How it works” 3-card grid, a “Popular this week” section with placeholder PartyCard components, a Safety/Trust strip, and a footer with links. Use the color tokens in the spec and export a Metadata object for SEO (title/description/OpenGraph). Make the layout responsive and accessible (semantic HTML, aria-labels).
+
+Discover page:
+
+Create /discover with a search bar (city input), radius slider, date quick filters, and chips for game/platform/vibe. Implement a map (Mapbox GL JS) on desktop left, list on right; mobile toggles. Fetch parties from /api/parties with query params; render skeletons while loading.
+
+Party API (Supabase):
+
+Scaffold the Postgres tables from the SQL schema provided. Add RLS policies so users can only edit their own parties and read public fields. Implement Next.js API routes for /api/parties (GET list, POST create), /api/parties/:id (GET detail, PATCH, DELETE), /api/parties/:id/rsvps (POST), and /api/rsvps/:id (PATCH). Validate inputs with Zod.
+
+Auth with magic links:
+
+Add Supabase Auth with email magic link. Create /login page and protect /host/* routes server-side. Store user profile in users table on first login.
+
+Event chat:
+
+Add /api/parties/:id/messages (GET/POST). On Party Detail, render a chat panel that’s only visible to accepted guests/host; use server actions or SWR polling.
+
+Address masking:
+
+In Party Detail API, only include address if the requesting user has an accepted RSVP or is the host; otherwise return address_masked: true.
+
+19) Manual Test Checklist (non-coder friendly)
+
+Create account via magic link ✅
+
+Create a party with title, time, 6 seats, Switch/MK8 ✅
+
+See it on Discover within your city ✅
+
+From a second account, request to join ✅
+
+Host sees pending RSVP, approves ✅
+
+Guest now sees full address ✅
+
+Both can chat in the party thread ✅
+
+After the end time, each can leave a rating ✅
+
+Report a party; admin can mark resolved ✅
