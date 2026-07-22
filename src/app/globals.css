@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  /* Spuds brand */
+  --color-spud-50: #fff0f3;
+  --color-spud-100: #ffe3ea;
+  --color-spud-200: #ffc2d0;
+  --color-spud-300: #ff9cb2;
+  --color-spud-400: #ff6b8a; /* Spuds Pink */
+  --color-spud-500: #f04f73;
+  --color-spud-600: #d93a60;
+
+  --color-sprout-100: #e3f6e6;
+  --color-sprout-300: #9adfa3;
+  --color-sprout-400: #6bcb77; /* Sprout Green */
+  --color-sprout-600: #3ea54c;
+
+  --color-cream-50: #fffbf2;
+  --color-cream-100: #fff4dd; /* Potato Cream */
+  --color-cream-200: #f8e8c8;
+
+  --color-soil-800: #272727; /* Deep Soil */
+  --color-soil-900: #171717; /* Dark Mode */
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-nunito), var(--font-inter), ui-sans-serif,
+    system-ui, sans-serif;
+
+  --radius-card: 1.5rem; /* 24px cards */
+}
+
+body {
+  background-color: var(--color-cream-50);
+  color: var(--color-soil-800);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+/* Hide scrollbars on horizontal card rails while keeping scroll */
+.scroll-rail {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-rail::-webkit-scrollbar {
+  display: none;
+}
