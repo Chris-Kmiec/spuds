@@ -135,7 +135,7 @@ values
    'Mario Kart & Deep Dish Night',
    'Eight racers, one projector, unlimited pizza. We run a full 48-track gauntlet with rotating seats — winner stays on. Expect yelling. Friendly yelling.',
    'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1200&q=80',
-   'casual', array['Mario Kart 8 Deluxe'], array['Switch'],
+   'club', array['Mario Kart 8 Deluxe'], array['Switch'],
    date_trunc('hour', now()) + interval '4 days 19 hours', date_trunc('hour', now()) + interval '4 days 23 hours',
    'Maria''s place', 'Wicker Park, Chicago, IL (address shared after RSVP)', 41.9088, -87.6796,
    8, 0, 'all', 'Everything provided — controllers, pizza, and a couch with lumbar support.',
@@ -171,7 +171,7 @@ values
    'Cozy Café Hangout: Stardew & Switch',
    'Bring your Switch or Steam Deck to the quiet back room of Kopi Café. We co-op Stardew, visit each other''s islands, and compare Balatro runs. Zero pressure to socialize — parallel play is the point.',
    'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=1200&q=80',
-   'casual', array['Stardew Valley','Animal Crossing: New Horizons','Balatro'], array['Switch','Steam Deck'],
+   'club', array['Stardew Valley','Animal Crossing: New Horizons','Balatro'], array['Switch','Steam Deck'],
    date_trunc('hour', now()) + interval '3 days 18 hours', date_trunc('hour', now()) + interval '3 days 21 hours',
    'Kopi Café', '5317 N Clark St, Chicago, IL', 41.9790, -87.6684,
    12, 0, 'all', 'Bring your own handheld. Café asks we each order something.',
@@ -183,7 +183,7 @@ values
    'Fighting Game Fundamentals (Beginner Night)',
    'Never played a fighting game offline? This is your night. We cover movement, spacing, and your first real combo in SF6 and Smash. Mentors at every setup. The only bad question is a Smash Ball question.',
    'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=1200&q=80',
-   'casual', array['Street Fighter 6','Super Smash Bros. Ultimate'], array['PS5','Switch'],
+   'club', array['Street Fighter 6','Super Smash Bros. Ultimate'], array['PS5','Switch'],
    date_trunc('hour', now()) + interval '5 days 18 hours', date_trunc('hour', now()) + interval '5 days 21 hours',
    'Logan Arcade', '2410 W Fullerton Ave, Chicago, IL', 41.9247, -87.6889,
    12, 0, 'beginner', 'All setups and controllers provided, including leverless if you want to try one.',
@@ -195,7 +195,7 @@ values
    'Mario Party Chaos: Friendship Stress Test',
    'Two boards, four hours, at least one alliance betrayal. We rotate all attendees through so nobody sits long. Minigame practice lobby on the second TV.',
    'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=1200&q=80',
-   'casual', array['Mario Party Superstars'], array['Switch'],
+   'club', array['Mario Party Superstars'], array['Switch'],
    date_trunc('hour', now()) + interval '11 days 19 hours', date_trunc('hour', now()) + interval '11 days 23 hours',
    'The Guild Games Café', '2418 N Milwaukee Ave, Chicago, IL', 41.9268, -87.7010,
    12, 0, 'all', 'Provided. Just bring the capacity for forgiveness.',
@@ -207,7 +207,7 @@ values
    'Rocket League 2v2 Ladder Night',
    'Casual ladder night — rotate partners every 3 matches so you meet everyone. Great warmup for the big LAN. All ranks welcome, we seed fairly.',
    'https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=1200&q=80',
-   'casual', array['Rocket League'], array['PC'],
+   'club', array['Rocket League'], array['PC'],
    date_trunc('hour', now()) + interval '1 day 19 hours', date_trunc('hour', now()) + interval '1 day 22 hours',
    'Ignite Gaming Lounge', '3341 N Elston Ave, Chicago, IL', 41.9420, -87.7040,
    12, 10.00, 'all', 'Lounge PCs included in price.',
@@ -223,7 +223,24 @@ values
    'tournament', array['Super Smash Bros. Ultimate'], array['Switch'],
    now() - interval '5 days', now() - interval '5 days' + interval '4 hours',
    'Logan Arcade', '2410 W Fullerton Ave, Chicago, IL', 41.9247, -87.6889,
-   32, 5.00, 'all', null, null, false, 'completed');
+   32, 5.00, 'all', null, null, false, 'completed'),
+
+  -- A watch party to showcase the content-first flow
+  ('e0000000-0000-0000-0000-000000000010',
+   (select id from public.profiles where username = 'fps_frank'),
+   null,
+   'Worlds Finals Watch Party',
+   'The League of Legends Worlds grand final on the big screen. We open two hours early for the pre-show and side bets (bragging rights only). Projector, surround sound, and a taco bar — come loud.',
+   'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&q=80',
+   'watch_party',
+   array['Esports finals', 'League of Legends Worlds', 'Live sports'],
+   array[]::text[],
+   date_trunc('hour', now()) + interval '7 days 16 hours',
+   date_trunc('hour', now()) + interval '7 days 21 hours',
+   'The Corner Bar (back room)', '2934 N Sheffield Ave, Chicago, IL', 41.9356, -87.6539,
+   40, 0, 'all',
+   'Projector + surround provided. Grab a seat early; taco bar opens at kickoff.',
+   'Spoiler-free if you''re late. Cheer hard, boo softly.', true, 'published');
 
 -- ---------- RSVPs (trigger adds attendees to event chats) ----------
 insert into public.event_attendees (event_id, user_id, status, message)
@@ -247,7 +264,10 @@ from (values
   ('e0000000-0000-0000-0000-000000000008', 'fps_frank',    null),
   ('e0000000-0000-0000-0000-000000000009', 'dpad_dana',    null),
   ('e0000000-0000-0000-0000-000000000009', 'mario_maria',  null),
-  ('e0000000-0000-0000-0000-000000000009', 'fps_frank',    null)
+  ('e0000000-0000-0000-0000-000000000009', 'fps_frank',    null),
+  ('e0000000-0000-0000-0000-000000000010', 'dpad_dana',    'Bringing a jersey'),
+  ('e0000000-0000-0000-0000-000000000010', 'lan_larry',    null),
+  ('e0000000-0000-0000-0000-000000000010', 'indie_izzy',   'Here for the tacos, staying for the game')
 ) as v (event_id, username, msg)
 join public.profiles p on p.username = v.username;
 

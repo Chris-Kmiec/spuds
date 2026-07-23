@@ -64,16 +64,47 @@ export const GOALS = [
 ];
 
 export const EVENT_TYPES = [
-  { value: "casual", label: "Casual hangout" },
   { value: "tournament", label: "Tournament" },
   { value: "lan", label: "LAN party" },
   { value: "club", label: "Club meetup" },
   { value: "watch_party", label: "Watch party" },
 ] as const;
 
-export const EVENT_TYPE_LABELS: Record<string, string> = Object.fromEntries(
-  EVENT_TYPES.map((t) => [t.value, t.label])
-);
+// Kept for legacy rows that predate the type cleanup.
+export const EVENT_TYPE_LABELS: Record<string, string> = {
+  ...Object.fromEntries(EVENT_TYPES.map((t) => [t.value, t.label])),
+  casual: "Meetup",
+};
+
+// Watch parties are about content, not games — shows, movies, esports, etc.
+export const WATCH_SUGGESTIONS = [
+  "Movie marathon",
+  "TV series binge",
+  "Season premiere",
+  "Esports finals",
+  "Speedrun marathon (GDQ)",
+  "Anime night",
+  "Live sports",
+  "Awards show",
+  "Horror night",
+  "The Game Awards",
+];
+
+/** Type-aware copy so the wizard and event page speak "watch" vs "play". */
+export function eventContentCopy(eventType: string) {
+  const watching = eventType === "watch_party";
+  return {
+    stepLabel: watching ? "Watching" : "Games",
+    question: watching ? "What are we watching?" : "What are you playing?",
+    addPlaceholder: watching
+      ? "Add a show, movie, or event…"
+      : "Add another game…",
+    sectionTitle: watching ? "What we're watching" : "What we're playing",
+    suggestions: watching ? WATCH_SUGGESTIONS : POPULAR_GAMES.slice(0, 14),
+    showPlatforms: !watching,
+    showSkill: !watching,
+  };
+}
 
 export const SKILL_LEVELS = [
   { value: "all", label: "All levels" },

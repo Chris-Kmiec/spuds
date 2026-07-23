@@ -10,16 +10,14 @@ import { Input, Textarea } from "@/components/ui/input";
 import {
   DEFAULT_EVENT_IMAGES,
   EVENT_TYPES,
+  eventContentCopy,
   PLATFORMS,
-  POPULAR_GAMES,
   SKILL_LEVELS,
 } from "@/lib/constants";
 import type { Community } from "@/lib/types";
 import { cn, formatEventDate, formatEventTime, formatPrice } from "@/lib/utils";
 import Image from "next/image";
 import { useState, useTransition } from "react";
-
-const steps = ["Basics", "Games", "Logistics", "Audience", "Preview"] as const;
 
 function toggle(list: string[], value: string) {
   return list.includes(value)
@@ -37,7 +35,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState(DEFAULT_EVENT_IMAGES[0]);
   const [usingUpload, setUsingUpload] = useState(false);
-  const [eventType, setEventType] = useState<string>("casual");
+  const [eventType, setEventType] = useState<string>("club");
   // Games
   const [games, setGames] = useState<string[]>([]);
   const [customGame, setCustomGame] = useState("");
@@ -55,6 +53,9 @@ export function EventWizard({ communities }: { communities: Community[] }) {
   const [skill, setSkill] = useState("all");
   const [equipment, setEquipment] = useState("");
   const [rules, setRules] = useState("");
+
+  const copy = eventContentCopy(eventType);
+  const steps = ["Basics", copy.stepLabel, "Logistics", "Details", "Preview"];
 
   const startIso =
     date && startTime ? new Date(`${date}T${startTime}`).toISOString() : "";
@@ -197,19 +198,17 @@ export function EventWizard({ communities }: { communities: Community[] }) {
       {step === 1 && (
         <div className="space-y-4">
           <div>
-            <p className="mb-2 text-sm font-semibold">What are you playing?</p>
+            <p className="mb-2 text-sm font-semibold">{copy.question}</p>
             <div className="flex flex-wrap gap-2">
-              {[...new Set([...POPULAR_GAMES.slice(0, 14), ...games])].map(
-                (g) => (
-                  <Chip
-                    key={g}
-                    selected={games.includes(g)}
-                    onClick={() => setGames(toggle(games, g))}
-                  >
-                    {g}
-                  </Chip>
-                )
-              )}
+              {[...new Set([...copy.suggestions, ...games])].map((g) => (
+                <Chip
+                  key={g}
+                  selected={games.includes(g)}
+                  onClick={() => setGames(toggle(games, g))}
+                >
+                  {g}
+                </Chip>
+              ))}
             </div>
             <div className="mt-3 flex gap-2">
               <Input
@@ -223,7 +222,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
                     setCustomGame("");
                   }
                 }}
-                placeholder="Add another game…"
+                placeholder={copy.addPlaceholder}
               />
               <Button
                 type="button"
@@ -238,20 +237,22 @@ export function EventWizard({ communities }: { communities: Community[] }) {
               </Button>
             </div>
           </div>
-          <div>
-            <p className="mb-2 text-sm font-semibold">Platforms</p>
-            <div className="flex flex-wrap gap-2">
-              {PLATFORMS.map((p) => (
-                <Chip
-                  key={p}
-                  selected={platforms.includes(p)}
-                  onClick={() => setPlatforms(toggle(platforms, p))}
-                >
-                  {p}
-                </Chip>
-              ))}
+          {copy.showPlatforms && (
+            <div>
+              <p className="mb-2 text-sm font-semibold">Platforms</p>
+              <div className="flex flex-wrap gap-2">
+                {PLATFORMS.map((p) => (
+                  <Chip
+                    key={p}
+                    selected={platforms.includes(p)}
+                    onClick={() => setPlatforms(toggle(platforms, p))}
+                  >
+                    {p}
+                  </Chip>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
@@ -345,29 +346,42 @@ export function EventWizard({ communities }: { communities: Community[] }) {
 
       {step === 3 && (
         <div className="space-y-4">
-          <div>
-            <p className="mb-2 text-sm font-semibold">Who is this for?</p>
-            <div className="flex flex-wrap gap-2">
-              {SKILL_LEVELS.map((s) => (
-                <Chip
-                  key={s.value}
-                  selected={skill === s.value}
-                  onClick={() => setSkill(s.value)}
-                >
-                  {s.label}
-                </Chip>
-              ))}
+          {copy.showSkill && (
+            <div>
+              <p className="mb-2 text-sm font-semibold">Who is this for?</p>
+              <div className="flex flex-wrap gap-2">
+                {SKILL_LEVELS.map((s) => (
+                  <Chip
+                    key={s.value}
+                    selected={skill === s.value}
+                    onClick={() => setSkill(s.value)}
+                  >
+                    {s.label}
+                  </Chip>
+                ))}
+              </div>
             </div>
+          )}
+          <div>
+            <p className="mb-2 text-sm font-semibold">Setup</p>
+            <Textarea
+              value={equipment}
+              onChange={(e) => setEquipment(e.target.value)}
+              placeholder={
+                eventType === "watch_party"
+                  ? "Setup — screen, sound, seating, snacks (e.g. “Projector + surround, BYO blanket, popcorn provided”)"
+                  : "Equipment — what's provided, what to bring (e.g. “4 setups provided, BYO controller”)"
+              }
+            />
           </div>
-          <Textarea
-            value={equipment}
-            onChange={(e) => setEquipment(e.target.value)}
-            placeholder="Equipment — what's provided, what to bring (e.g. “4 setups provided, BYO controller”)"
-          />
           <Textarea
             value={rules}
             onChange={(e) => setRules(e.target.value)}
-            placeholder="House rules (optional) — rulesets, etiquette, vibes"
+            placeholder={
+              eventType === "watch_party"
+                ? "House rules (optional) — spoiler policy, talking vs quiet, arrival time"
+                : "House rules (optional) — rulesets, etiquette, vibes"
+            }
           />
         </div>
       )}

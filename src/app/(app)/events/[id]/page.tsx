@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getCurrentProfile } from "@/lib/data";
+import { eventContentCopy } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
 import type { Attendee, EventRow, Profile, Review } from "@/lib/types";
 import {
@@ -15,6 +16,7 @@ import {
 import {
   ArrowLeft,
   CalendarDays,
+  Clapperboard,
   Gamepad2,
   MapPin,
   MessageCircle,
@@ -283,7 +285,12 @@ export default async function EventDetailPage({
         <Card className="space-y-4 p-5">
           <div>
             <h2 className="mb-2 flex items-center gap-2 font-display text-lg font-extrabold">
-              <Gamepad2 className="size-5 text-soil-800/40" /> What we&apos;re playing
+              {event.event_type === "watch_party" ? (
+                <Clapperboard className="size-5 text-soil-800/40" />
+              ) : (
+                <Gamepad2 className="size-5 text-soil-800/40" />
+              )}{" "}
+              {eventContentCopy(event.event_type).sectionTitle}
             </h2>
             <div className="flex flex-wrap gap-2">
               {event.games.map((g) => (
@@ -297,7 +304,8 @@ export default async function EventDetailPage({
           {event.equipment && (
             <div>
               <h3 className="mb-1 flex items-center gap-2 font-semibold">
-                <Wrench className="size-4 text-soil-800/50" /> Equipment
+                <Wrench className="size-4 text-soil-800/50" />{" "}
+                {event.event_type === "watch_party" ? "Setup" : "Equipment"}
               </h3>
               <p className="text-sm text-soil-800/70">{event.equipment}</p>
             </div>
