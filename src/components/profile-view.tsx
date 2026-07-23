@@ -70,7 +70,7 @@ export function ProfileView({
         {badges.length > 0 && (
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {badges.map((b) => (
-              <Badge key={b.label} tone="cream">
+              <Badge key={b.label}>
                 {b.emoji} {b.label}
               </Badge>
             ))}
@@ -84,23 +84,19 @@ export function ProfileView({
       {gp && (
         <Card className="space-y-4 p-5">
           <h2 className="font-display text-lg font-extrabold">
-            🎮 Gaming identity
+            Gaming identity
           </h2>
           {gp.favorite_games.length > 0 && (
-            <IdentityRow label="Plays" items={gp.favorite_games} tone="pink" />
+            <IdentityRow label="Plays" items={gp.favorite_games} />
           )}
           {gp.platforms.length > 0 && (
-            <IdentityRow label="On" items={gp.platforms} tone="green" />
+            <IdentityRow label="On" items={gp.platforms} />
           )}
           {gp.play_styles.length > 0 && (
-            <IdentityRow label="Style" items={gp.play_styles} tone="cream" />
+            <IdentityRow label="Style" items={gp.play_styles} />
           )}
           {gp.availability.length > 0 && (
-            <IdentityRow
-              label="Around"
-              items={gp.availability}
-              tone="neutral"
-            />
+            <IdentityRow label="Around" items={gp.availability} />
           )}
         </Card>
       )}
@@ -109,7 +105,7 @@ export function ProfileView({
       {data.reviews.length > 0 && (
         <Card className="space-y-4 p-5">
           <h2 className="font-display text-lg font-extrabold">
-            ⭐ Reviews ({data.reviews.length})
+            Reviews ({data.reviews.length})
           </h2>
           {data.reviews.map((r) => (
             <div
@@ -136,9 +132,7 @@ export function ProfileView({
               {r.tags.length > 0 && (
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
                   {r.tags.map((t) => (
-                    <Badge key={t} tone="green">
-                      {t}
-                    </Badge>
+                    <Badge key={t}>{t}</Badge>
                   ))}
                 </div>
               )}
@@ -162,11 +156,9 @@ function Stat({ label, value }: { label: string; value: number }) {
 function IdentityRow({
   label,
   items,
-  tone,
 }: {
   label: string;
   items: string[];
-  tone: "pink" | "green" | "cream" | "neutral";
 }) {
   return (
     <div>
@@ -175,9 +167,7 @@ function IdentityRow({
       </p>
       <div className="flex flex-wrap gap-1.5">
         {items.map((i) => (
-          <Badge key={i} tone={tone}>
-            {i}
-          </Badge>
+          <Badge key={i}>{i}</Badge>
         ))}
       </div>
     </div>

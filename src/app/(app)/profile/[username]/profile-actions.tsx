@@ -42,7 +42,7 @@ export function PublicProfileActions({
         )}
       </Button>
       <Button
-        variant="secondary"
+        variant="outline"
         size="sm"
         disabled={pending}
         onClick={() =>

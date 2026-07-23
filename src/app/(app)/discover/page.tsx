@@ -125,7 +125,7 @@ export default async function DiscoverPage({
   return (
     <div className="space-y-6">
       <header className="pt-2">
-        <p className="text-sm font-semibold text-spud-500">
+        <p className="text-xs font-semibold uppercase tracking-wide text-soil-800/50">
           {profile?.location ?? "Near you"}
         </p>
         <h1 className="font-display text-3xl font-black">
@@ -163,7 +163,7 @@ export default async function DiscoverPage({
       ) : (
         <>
           {featured.length > 0 && (
-            <Rail title="Featured" emoji="⭐">
+            <Rail title="Featured">
               {featured.map((e) => (
                 <EventCard key={e.id} event={e} viewer={viewer} layout="rail" />
               ))}
@@ -171,7 +171,7 @@ export default async function DiscoverPage({
           )}
 
           {recommended.length > 0 && (
-            <Rail title="For you" emoji="🎯">
+            <Rail title="For you">
               {recommended.map((e) => (
                 <EventCard key={e.id} event={e} viewer={viewer} layout="rail" />
               ))}
@@ -179,7 +179,7 @@ export default async function DiscoverPage({
           )}
 
           {thisWeekend.length > 0 && (
-            <Rail title="This weekend" emoji="🔥">
+            <Rail title="This weekend">
               {thisWeekend.map((e) => (
                 <EventCard key={e.id} event={e} viewer={viewer} layout="rail" />
               ))}
@@ -189,7 +189,7 @@ export default async function DiscoverPage({
           {communities && communities.length > 0 && (
             <section>
               <h2 className="mb-3 font-display text-lg font-extrabold">
-                🏘️ Communities nearby
+                Communities nearby
               </h2>
               <div className="scroll-rail flex gap-3 overflow-x-auto pb-2">
                 {(communities as (Community & { members: { count: number }[] })[]).map(
@@ -231,7 +231,7 @@ export default async function DiscoverPage({
 
           <section className="space-y-4">
             <h2 className="font-display text-lg font-extrabold">
-              📅 All upcoming
+              All upcoming
             </h2>
             {cards.length === 0 && (
               <Card className="p-8 text-center text-soil-800/60">
@@ -268,18 +268,14 @@ export default async function DiscoverPage({
 
 function Rail({
   title,
-  emoji,
   children,
 }: {
   title: string;
-  emoji: string;
   children: React.ReactNode;
 }) {
   return (
     <section>
-      <h2 className="mb-3 font-display text-lg font-extrabold">
-        {emoji} {title}
-      </h2>
+      <h2 className="mb-3 font-display text-lg font-extrabold">{title}</h2>
       <div className="scroll-rail flex gap-3 overflow-x-auto pb-2">
         {children}
       </div>

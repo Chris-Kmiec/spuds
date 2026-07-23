@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
+import { MapPin, PartyPopper, Users } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -26,11 +27,7 @@ export default async function LandingPage() {
         </header>
 
         <section className="flex flex-1 flex-col justify-center py-16">
-          <div className="mb-6 flex gap-2 text-4xl">
-            <span>🎮</span>
-            <span>🕹️</span>
-            <span>🥔</span>
-          </div>
+          <div className="mb-6 text-5xl">🥔</div>
           <h1 className="font-display text-5xl font-black leading-tight text-soil-800">
             Find your <span className="text-spud-400">player two</span>.
           </h1>
@@ -55,15 +52,15 @@ export default async function LandingPage() {
 
           <div className="mt-12 grid grid-cols-3 gap-3 text-center text-sm font-semibold text-soil-800/70">
             <div className="rounded-card bg-white p-4 shadow-sm">
-              <div className="text-2xl">📍</div>
+              <MapPin className="mx-auto size-6 text-spud-400" />
               <div className="mt-2">Discover events nearby</div>
             </div>
             <div className="rounded-card bg-white p-4 shadow-sm">
-              <div className="text-2xl">🤝</div>
+              <Users className="mx-auto size-6 text-spud-400" />
               <div className="mt-2">Meet trusted players</div>
             </div>
             <div className="rounded-card bg-white p-4 shadow-sm">
-              <div className="text-2xl">🎉</div>
+              <PartyPopper className="mx-auto size-6 text-spud-400" />
               <div className="mt-2">Host your own nights</div>
             </div>
           </div>

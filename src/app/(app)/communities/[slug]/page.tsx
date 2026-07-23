@@ -108,9 +108,7 @@ export default async function CommunityDetailPage({
           {community.games.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {community.games.map((g) => (
-                <Badge key={g} tone="pink">
-                  {g}
-                </Badge>
+                <Badge key={g}>{g}</Badge>
               ))}
             </div>
           )}
@@ -172,7 +170,7 @@ export default async function CommunityDetailPage({
                   {(m.profile.display_name ?? m.profile.username).split(" ")[0]}
                 </span>
                 {m.role !== "member" && (
-                  <Badge tone="green" className="px-1.5 py-0.5 text-[9px]">
+                  <Badge className="px-1.5 py-0.5 text-[9px]">
                     {m.role}
                   </Badge>
                 )}

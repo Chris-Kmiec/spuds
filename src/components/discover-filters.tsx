@@ -62,7 +62,7 @@ export function DiscoverFilters() {
             }
             className="shrink-0"
           >
-            {t.emoji} {t.label}
+            {t.label}
           </Chip>
         ))}
         {SKILL_LEVELS.filter((s) => s.value !== "all").map((s) => (

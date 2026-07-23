@@ -4,7 +4,7 @@ import { getCurrentProfile } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { EventRow, Message, Profile } from "@/lib/types";
 import { formatEventDate } from "@/lib/utils";
-import { MessageCircle } from "lucide-react";
+import { Gamepad2, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = { title: "Messages" };
@@ -123,8 +123,8 @@ export default async function MessagesPage() {
                     size="lg"
                   />
                 ) : (
-                  <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-spud-100 text-xl">
-                    🎮
+                  <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-soil-800/5">
+                    <Gamepad2 className="size-6 text-soil-800/40" />
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
@@ -141,7 +141,7 @@ export default async function MessagesPage() {
                   <p className="truncate text-sm text-soil-800/60">
                     {last
                       ? `${last.sender?.display_name?.split(" ")[0] ?? last.sender?.username ?? "Player"}: ${last.content}`
-                      : "Say hi 👋"}
+                      : "Say hi"}
                   </p>
                 </div>
               </Card>

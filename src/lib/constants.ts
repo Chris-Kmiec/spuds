@@ -64,12 +64,16 @@ export const GOALS = [
 ];
 
 export const EVENT_TYPES = [
-  { value: "casual", label: "Casual hangout", emoji: "🛋️" },
-  { value: "tournament", label: "Tournament", emoji: "🏆" },
-  { value: "lan", label: "LAN party", emoji: "🖥️" },
-  { value: "club", label: "Club meetup", emoji: "🎪" },
-  { value: "watch_party", label: "Watch party", emoji: "📺" },
+  { value: "casual", label: "Casual hangout" },
+  { value: "tournament", label: "Tournament" },
+  { value: "lan", label: "LAN party" },
+  { value: "club", label: "Club meetup" },
+  { value: "watch_party", label: "Watch party" },
 ] as const;
+
+export const EVENT_TYPE_LABELS: Record<string, string> = Object.fromEntries(
+  EVENT_TYPES.map((t) => [t.value, t.label])
+);
 
 export const SKILL_LEVELS = [
   { value: "all", label: "All levels" },

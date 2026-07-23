@@ -1,6 +1,7 @@
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { EVENT_TYPE_LABELS } from "@/lib/constants";
 import type { EventRow, Profile } from "@/lib/types";
 import {
   cn,
@@ -17,14 +18,6 @@ export type EventCardData = EventRow & {
   host: Pick<Profile, "id" | "username" | "display_name" | "avatar_url">;
   going: number;
   hostRating?: number | null;
-};
-
-const typeEmoji: Record<string, string> = {
-  casual: "🛋️",
-  tournament: "🏆",
-  lan: "🖥️",
-  club: "🎪",
-  watch_party: "📺",
 };
 
 export function EventCard({
@@ -68,17 +61,17 @@ export function EventCard({
             />
           )}
           <div className="absolute left-3 top-3 flex gap-2">
-            <Badge tone="cream" className="bg-white/90 backdrop-blur">
-              {typeEmoji[event.event_type]}{" "}
-              {event.event_type === "watch_party"
-                ? "watch party"
-                : event.event_type}
+            <Badge className="bg-white/90 text-soil-800/70 backdrop-blur">
+              {EVENT_TYPE_LABELS[event.event_type]}
             </Badge>
           </div>
           <div className="absolute right-3 top-3">
             <Badge
-              tone={Number(event.price) === 0 ? "green" : "cream"}
-              className="bg-white/90 backdrop-blur"
+              tone={Number(event.price) === 0 ? "positive" : "neutral"}
+              className={cn(
+                "backdrop-blur",
+                Number(event.price) !== 0 && "bg-white/90 text-soil-800/70"
+              )}
             >
               {formatPrice(event.price)}
             </Badge>
@@ -92,23 +85,21 @@ export function EventCard({
 
           <div className="flex flex-wrap gap-1.5">
             {event.games.slice(0, 2).map((g) => (
-              <Badge key={g} tone="pink">
-                {g}
-              </Badge>
+              <Badge key={g}>{g}</Badge>
             ))}
             {event.games.length > 2 && (
-              <Badge tone="neutral">+{event.games.length - 2}</Badge>
+              <Badge>+{event.games.length - 2}</Badge>
             )}
           </div>
 
           <div className="space-y-1 text-sm text-soil-800/70">
             <div className="flex items-center gap-1.5">
-              <CalendarDays className="size-4 shrink-0 text-spud-400" />
+              <CalendarDays className="size-4 shrink-0 text-soil-800/40" />
               {formatEventDate(event.start_time)} ·{" "}
               {formatEventTime(event.start_time)}
             </div>
             <div className="flex items-center gap-1.5">
-              <MapPin className="size-4 shrink-0 text-spud-400" />
+              <MapPin className="size-4 shrink-0 text-soil-800/40" />
               <span className="truncate">
                 {event.location_name ?? "Location TBA"}
               </span>
@@ -140,7 +131,7 @@ export function EventCard({
             <div
               className={cn(
                 "flex items-center gap-1 text-xs font-bold",
-                spotsLeft <= 2 ? "text-spud-500" : "text-sprout-600"
+                spotsLeft <= 2 ? "text-soil-800" : "text-sprout-600"
               )}
             >
               <Users className="size-3.5" />

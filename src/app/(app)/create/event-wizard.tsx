@@ -143,7 +143,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
                   selected={eventType === t.value}
                   onClick={() => setEventType(t.value)}
                 >
-                  {t.emoji} {t.label}
+                  {t.label}
                 </Chip>
               ))}
             </div>
@@ -368,14 +368,10 @@ export function EventWizard({ communities }: { communities: Community[] }) {
             <h2 className="font-display text-xl font-black">{title}</h2>
             <div className="flex flex-wrap gap-1.5">
               {games.map((g) => (
-                <Badge key={g} tone="pink">
-                  {g}
-                </Badge>
+                <Badge key={g}>{g}</Badge>
               ))}
               {platforms.map((p) => (
-                <Badge key={p} tone="green">
-                  {p}
-                </Badge>
+                <Badge key={p}>{p}</Badge>
               ))}
             </div>
             <p className="text-sm text-soil-800/70">
@@ -418,7 +414,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
           </Button>
         ) : (
           <Button className="flex-1" onClick={publish} disabled={pending}>
-            {pending ? "Publishing…" : "Publish event 🎉"}
+            {pending ? "Publishing…" : "Publish event"}
           </Button>
         )}
       </div>

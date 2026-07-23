@@ -1,14 +1,13 @@
 import { cn } from "@/lib/utils";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "secondary" | "outline" | "ghost" | "danger";
+// No green button — pink is the only accent (see DESIGN.md).
+type Variant = "primary" | "outline" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const variants: Record<Variant, string> = {
   primary:
     "bg-spud-400 text-white shadow-md shadow-spud-400/30 hover:bg-spud-500 active:scale-[0.98]",
-  secondary:
-    "bg-sprout-400 text-white shadow-md shadow-sprout-400/30 hover:bg-sprout-600 active:scale-[0.98]",
   outline:
     "border-2 border-soil-800/15 bg-white text-soil-800 hover:border-spud-400 hover:text-spud-500",
   ghost: "text-soil-800/70 hover:bg-soil-800/5 hover:text-soil-800",

@@ -124,7 +124,7 @@ export default function NewCommunityPage() {
           });
         }}
       >
-        {pending ? "Creating…" : "Create community 🌱"}
+        {pending ? "Creating…" : "Create community"}
       </Button>
     </div>
   );

@@ -54,7 +54,7 @@ export default async function MyProfilePage() {
       {upcoming.length > 0 && (
         <section className="space-y-3">
           <h2 className="font-display text-lg font-extrabold">
-            📅 Your upcoming events
+            Your upcoming events
           </h2>
           {upcoming.map((e) => (
             <EventCard

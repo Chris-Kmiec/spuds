@@ -112,7 +112,7 @@ function CommunityCard({
         <div className="min-w-0 flex-1 py-1">
           <div className="flex items-center gap-2">
             <h3 className="truncate font-display font-extrabold">{c.name}</h3>
-            {isMember && <Badge tone="green">Joined</Badge>}
+            {isMember && <Badge tone="positive">Joined</Badge>}
           </div>
           <p className="mt-0.5 line-clamp-2 text-sm text-soil-800/60">
             {c.description}

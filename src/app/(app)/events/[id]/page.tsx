@@ -137,16 +137,17 @@ export default async function EventDetailPage({
         </Link>
         <div className="absolute bottom-4 left-4 right-4">
           <div className="mb-2 flex gap-2">
-            <Badge tone="cream" className="bg-white/90">
+            <Badge
+              tone={Number(event.price) === 0 ? "positive" : "neutral"}
+              className={Number(event.price) !== 0 ? "bg-white/90 text-soil-800/70" : undefined}
+            >
               {formatPrice(event.price)}
             </Badge>
-            <Badge tone="cream" className="bg-white/90">
+            <Badge className="bg-white/90 text-soil-800/70">
               {SKILL_LABELS[event.skill_level]}
             </Badge>
             {isPast && (
-              <Badge tone="neutral" className="bg-white/90">
-                Past event
-              </Badge>
+              <Badge className="bg-white/90 text-soil-800/70">Past event</Badge>
             )}
           </div>
           <h1 className="font-display text-2xl font-black text-white drop-shadow">
@@ -159,8 +160,8 @@ export default async function EventDetailPage({
         {/* when & where */}
         <Card className="space-y-3 p-5">
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-spud-100 p-2.5">
-              <CalendarDays className="size-5 text-spud-500" />
+            <div className="rounded-xl bg-soil-800/5 p-2.5">
+              <CalendarDays className="size-5 text-soil-800/60" />
             </div>
             <div>
               <p className="font-semibold">
@@ -173,8 +174,8 @@ export default async function EventDetailPage({
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-sprout-100 p-2.5">
-              <MapPin className="size-5 text-sprout-600" />
+            <div className="rounded-xl bg-soil-800/5 p-2.5">
+              <MapPin className="size-5 text-soil-800/60" />
             </div>
             <div>
               <p className="font-semibold">
@@ -186,8 +187,8 @@ export default async function EventDetailPage({
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-cream-100 p-2.5">
-              <Ticket className="size-5 text-soil-800/70" />
+            <div className="rounded-xl bg-soil-800/5 p-2.5">
+              <Ticket className="size-5 text-soil-800/60" />
             </div>
             <div>
               <p className="font-semibold">
@@ -282,18 +283,14 @@ export default async function EventDetailPage({
         <Card className="space-y-4 p-5">
           <div>
             <h2 className="mb-2 flex items-center gap-2 font-display text-lg font-extrabold">
-              <Gamepad2 className="size-5 text-spud-400" /> What we&apos;re playing
+              <Gamepad2 className="size-5 text-soil-800/40" /> What we&apos;re playing
             </h2>
             <div className="flex flex-wrap gap-2">
               {event.games.map((g) => (
-                <Badge key={g} tone="pink">
-                  {g}
-                </Badge>
+                <Badge key={g}>{g}</Badge>
               ))}
               {event.platforms.map((p) => (
-                <Badge key={p} tone="green">
-                  {p}
-                </Badge>
+                <Badge key={p}>{p}</Badge>
               ))}
             </div>
           </div>
@@ -320,7 +317,6 @@ export default async function EventDetailPage({
           </h2>
           {friendsGoing.length > 0 && (
             <p className="mb-3 rounded-xl bg-sprout-100 px-3 py-2 text-sm font-semibold text-sprout-600">
-              🎉{" "}
               {friendsGoing
                 .map((a) => a.profile.display_name ?? a.profile.username)
                 .slice(0, 2)
@@ -357,7 +353,7 @@ export default async function EventDetailPage({
         {/* event chat */}
         {canChat && conversation && (
           <Link href={`/messages/${conversation.id}`} className="block">
-            <Button variant="secondary" className="w-full">
+            <Button variant="outline" className="w-full">
               <MessageCircle className="size-4" /> Open event chat
             </Button>
           </Link>

@@ -152,15 +152,7 @@ function Section({
                   {formatEventTime(e.start_time)}
                 </p>
               </div>
-              <Badge
-                tone={
-                  e.status === "published"
-                    ? "green"
-                    : e.status === "cancelled"
-                      ? "neutral"
-                      : "cream"
-                }
-              >
+              <Badge tone={e.status === "published" ? "positive" : "neutral"}>
                 {e.status}
               </Badge>
             </div>
@@ -195,9 +187,7 @@ function Section({
                     <span className="font-semibold">
                       {a.profile.display_name ?? a.profile.username}
                     </span>
-                    {a.guests > 0 && (
-                      <Badge tone="neutral">+{a.guests}</Badge>
-                    )}
+                    {a.guests > 0 && <Badge>+{a.guests}</Badge>}
                     {a.message && (
                       <span className="truncate text-soil-800/60">
                         “{a.message}”

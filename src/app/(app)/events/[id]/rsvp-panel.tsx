@@ -34,7 +34,7 @@ export function RsvpPanel({
         <div className="mx-auto max-w-xl">
           <Button
             className="w-full"
-            variant="secondary"
+            variant="outline"
             onClick={() => router.push("/create/manage")}
           >
             Manage your event
@@ -72,8 +72,8 @@ export function RsvpPanel({
             <div className="flex-1">
               <p className="font-display font-extrabold text-sprout-600">
                 {myStatus === "going"
-                  ? "You're going! 🎉"
-                  : "You're on the waitlist ⏳"}
+                  ? "You're going!"
+                  : "You're on the waitlist"}
               </p>
               <p className="text-xs text-soil-800/60">
                 {myStatus === "going"

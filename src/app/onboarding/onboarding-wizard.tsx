@@ -106,8 +106,8 @@ export function OnboardingWizard({ username }: { username: string }) {
       </div>
 
       <div className="flex-1 py-8">
-        <p className="text-sm font-semibold text-spud-500">
-          Hey {username} 👋 · Step {step + 1} of {steps.length}
+        <p className="text-xs font-semibold uppercase tracking-wide text-soil-800/50">
+          Step {step + 1} of {steps.length}
         </p>
         <h1 className="mt-2 font-display text-3xl font-black">
           {steps[step].title}
@@ -225,7 +225,7 @@ export function OnboardingWizard({ username }: { username: string }) {
                 {locating
                   ? "Locating…"
                   : coords
-                    ? "Location captured ✓"
+                    ? "Location captured"
                     : "Use my precise location"}
               </Button>
               <p className="text-xs text-soil-800/50">
@@ -265,7 +265,7 @@ export function OnboardingWizard({ username }: { username: string }) {
             disabled={!canContinue || pending}
             onClick={finish}
           >
-            {pending ? "Setting up your feed…" : "Show me events 🎮"}
+            {pending ? "Setting up your feed…" : "Show me events"}
           </Button>
         )}
       </div>

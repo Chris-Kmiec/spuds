@@ -1,13 +1,12 @@
 import { cn } from "@/lib/utils";
 import type { HTMLAttributes } from "react";
 
-type Tone = "pink" | "green" | "cream" | "neutral";
+// Two tones only (see DESIGN.md): neutral for metadata, positive for good-news status.
+type Tone = "neutral" | "positive";
 
 const tones: Record<Tone, string> = {
-  pink: "bg-spud-100 text-spud-600",
-  green: "bg-sprout-100 text-sprout-600",
-  cream: "bg-cream-100 text-soil-800/80",
   neutral: "bg-soil-800/5 text-soil-800/70",
+  positive: "bg-sprout-100 text-sprout-600",
 };
 
 export function Badge({
