@@ -3,6 +3,7 @@
 import { createCommunity } from "../actions";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { Input, Textarea } from "@/components/ui/input";
 import { DEFAULT_EVENT_IMAGES, POPULAR_GAMES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,7 @@ export default function NewCommunityPage() {
   const [games, setGames] = useState<string[]>([]);
   const [location, setLocation] = useState("");
   const [imageUrl, setImageUrl] = useState(DEFAULT_EVENT_IMAGES[3]);
+  const [usingUpload, setUsingUpload] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -81,15 +83,32 @@ export default function NewCommunityPage() {
 
       <div>
         <p className="mb-2 text-sm font-semibold">Banner image</p>
+        <ImageUpload
+          bucket="community-images"
+          value={usingUpload ? imageUrl : null}
+          onUploaded={(url) => {
+            setImageUrl(url);
+            setUsingUpload(true);
+          }}
+          label="Upload a banner"
+        />
+        <p className="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-soil-800/50">
+          Or pick one
+        </p>
         <div className="grid grid-cols-3 gap-2">
           {DEFAULT_EVENT_IMAGES.map((url) => (
             <button
               key={url}
               type="button"
-              onClick={() => setImageUrl(url)}
+              onClick={() => {
+                setImageUrl(url);
+                setUsingUpload(false);
+              }}
               className={cn(
                 "relative h-16 overflow-hidden rounded-xl border-4 transition-colors",
-                imageUrl === url ? "border-spud-400" : "border-transparent"
+                !usingUpload && imageUrl === url
+                  ? "border-spud-400"
+                  : "border-transparent"
               )}
             >
               <Image

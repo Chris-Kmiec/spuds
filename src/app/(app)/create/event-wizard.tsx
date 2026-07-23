@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { Input, Textarea } from "@/components/ui/input";
 import {
   DEFAULT_EVENT_IMAGES,
@@ -35,6 +36,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState(DEFAULT_EVENT_IMAGES[0]);
+  const [usingUpload, setUsingUpload] = useState(false);
   const [eventType, setEventType] = useState<string>("casual");
   // Games
   const [games, setGames] = useState<string[]>([]);
@@ -150,15 +152,32 @@ export function EventWizard({ communities }: { communities: Community[] }) {
           </div>
           <div>
             <p className="mb-2 text-sm font-semibold">Cover image</p>
+            <ImageUpload
+              bucket="event-images"
+              value={usingUpload ? imageUrl : null}
+              onUploaded={(url) => {
+                setImageUrl(url);
+                setUsingUpload(true);
+              }}
+              label="Upload your event photo"
+            />
+            <p className="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-soil-800/50">
+              Or pick one
+            </p>
             <div className="grid grid-cols-3 gap-2">
               {DEFAULT_EVENT_IMAGES.map((url) => (
                 <button
                   key={url}
                   type="button"
-                  onClick={() => setImageUrl(url)}
+                  onClick={() => {
+                    setImageUrl(url);
+                    setUsingUpload(false);
+                  }}
                   className={cn(
                     "relative h-20 overflow-hidden rounded-xl border-4 transition-colors",
-                    imageUrl === url ? "border-spud-400" : "border-transparent"
+                    !usingUpload && imageUrl === url
+                      ? "border-spud-400"
+                      : "border-transparent"
                   )}
                 >
                   <Image

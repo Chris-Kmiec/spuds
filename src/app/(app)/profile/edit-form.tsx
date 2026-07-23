@@ -4,6 +4,7 @@ import { updateProfile } from "./actions";
 import { logout } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { Input, Textarea } from "@/components/ui/input";
 import type { Profile } from "@/lib/types";
 import { LogOut, Pencil } from "lucide-react";
@@ -16,6 +17,7 @@ export function ProfileSettings({ profile }: { profile: Profile }) {
   const [displayName, setDisplayName] = useState(profile.display_name ?? "");
   const [bio, setBio] = useState(profile.bio ?? "");
   const [location, setLocation] = useState(profile.location ?? "");
+  const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -36,6 +38,16 @@ export function ProfileSettings({ profile }: { profile: Profile }) {
 
   return (
     <Card className="space-y-3 bg-cream-50 p-4 text-left">
+      <div className="space-y-1">
+        <span className="text-sm font-semibold">Profile photo</span>
+        <ImageUpload
+          bucket="avatars"
+          value={avatarUrl}
+          onUploaded={setAvatarUrl}
+          shape="square"
+          label="Upload a photo"
+        />
+      </div>
       <label className="block space-y-1">
         <span className="text-sm font-semibold">Display name</span>
         <Input
@@ -80,6 +92,7 @@ export function ProfileSettings({ profile }: { profile: Profile }) {
                 display_name: displayName,
                 bio,
                 location,
+                avatar_url: avatarUrl,
               });
               if (result.error) setError(result.error);
               else {

@@ -8,6 +8,7 @@ export async function updateProfile(input: {
   display_name: string;
   bio: string;
   location: string;
+  avatar_url?: string | null;
 }) {
   const supabase = await createClient();
   const {
@@ -15,13 +16,16 @@ export async function updateProfile(input: {
   } = await supabase.auth.getUser();
   if (!user) return { error: "Not signed in" };
 
+  const patch: Record<string, string | null> = {
+    display_name: input.display_name.trim() || null,
+    bio: input.bio.trim() || null,
+    location: input.location.trim() || null,
+  };
+  if (input.avatar_url !== undefined) patch.avatar_url = input.avatar_url;
+
   const { error } = await supabase
     .from("profiles")
-    .update({
-      display_name: input.display_name.trim() || null,
-      bio: input.bio.trim() || null,
-      location: input.location.trim() || null,
-    })
+    .update(patch)
     .eq("id", user.id);
 
   if (error) return { error: error.message };
