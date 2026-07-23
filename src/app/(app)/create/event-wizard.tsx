@@ -99,9 +99,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
     <div className="space-y-6">
       <header className="pt-2">
         <h1 className="font-display text-3xl font-black">Host an event</h1>
-        <p className="text-soil-800/60">
-          Great gaming nights start with one brave host. That&apos;s you.
-        </p>
+        <p className="text-soil-800/60">{copy.hostTagline}</p>
       </header>
 
       {/* step indicator */}
