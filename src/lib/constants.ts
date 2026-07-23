@@ -102,16 +102,8 @@ export function eventContentCopy(eventType: string) {
     sectionTitle: watching ? "What we're watching" : "What we're playing",
     suggestions: watching ? WATCH_SUGGESTIONS : POPULAR_GAMES.slice(0, 14),
     showPlatforms: !watching,
-    showSkill: !watching,
   };
 }
-
-export const SKILL_LEVELS = [
-  { value: "all", label: "All levels" },
-  { value: "beginner", label: "Beginner friendly" },
-  { value: "intermediate", label: "Intermediate" },
-  { value: "competitive", label: "Competitive" },
-] as const;
 
 export const REVIEW_TAGS = [
   "Friendly",

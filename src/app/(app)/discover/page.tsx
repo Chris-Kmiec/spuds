@@ -43,7 +43,6 @@ export default async function DiscoverPage({
   searchParams: Promise<{
     q?: string;
     type?: string;
-    skill?: string;
     free?: string;
   }>;
 }) {
@@ -67,7 +66,6 @@ export default async function DiscoverPage({
     );
   }
   if (params.type) query = query.eq("event_type", params.type);
-  if (params.skill) query = query.eq("skill_level", params.skill);
   if (params.free === "1") query = query.eq("price", 0);
 
   const [{ data: eventsData }, { data: gamingProfile }, { data: communities }] =
@@ -105,8 +103,7 @@ export default async function DiscoverPage({
   const cards = events.map((e) => toCard(e, ratings));
   const gp = gamingProfile as GamingProfile | null;
 
-  const filtering =
-    !!params.q || !!params.type || !!params.skill || params.free === "1";
+  const filtering = !!params.q || !!params.type || params.free === "1";
 
   const featured = cards.filter((e) => e.featured);
   const favoriteGames = new Set(gp?.favorite_games ?? []);

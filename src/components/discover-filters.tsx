@@ -2,7 +2,7 @@
 
 import { Chip } from "@/components/ui/chip";
 import { Input } from "@/components/ui/input";
-import { EVENT_TYPES, SKILL_LEVELS } from "@/lib/constants";
+import { EVENT_TYPES } from "@/lib/constants";
 import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -30,7 +30,6 @@ export function DiscoverFilters() {
   }, [q]);
 
   const activeType = params.get("type");
-  const activeSkill = params.get("skill");
   const freeOnly = params.get("free") === "1";
 
   return (
@@ -63,18 +62,6 @@ export function DiscoverFilters() {
             className="shrink-0"
           >
             {t.label}
-          </Chip>
-        ))}
-        {SKILL_LEVELS.filter((s) => s.value !== "all").map((s) => (
-          <Chip
-            key={s.value}
-            selected={activeSkill === s.value}
-            onClick={() =>
-              setParam("skill", activeSkill === s.value ? null : s.value)
-            }
-            className="shrink-0"
-          >
-            {s.label}
           </Chip>
         ))}
       </div>

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getCurrentProfile } from "@/lib/data";
-import { eventContentCopy } from "@/lib/constants";
+import { eventContentCopy, EVENT_TYPE_LABELS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
 import type { Attendee, EventRow, Profile, Review } from "@/lib/types";
 import {
@@ -28,13 +28,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
-const SKILL_LABELS: Record<string, string> = {
-  all: "All levels welcome",
-  beginner: "Beginner friendly",
-  intermediate: "Intermediate",
-  competitive: "Competitive",
-};
 
 export default async function EventDetailPage({
   params,
@@ -146,7 +139,7 @@ export default async function EventDetailPage({
               {formatPrice(event.price)}
             </Badge>
             <Badge className="bg-white/90 text-soil-800/70">
-              {SKILL_LABELS[event.skill_level]}
+              {EVENT_TYPE_LABELS[event.event_type]}
             </Badge>
             {isPast && (
               <Badge className="bg-white/90 text-soil-800/70">Past event</Badge>

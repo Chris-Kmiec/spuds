@@ -12,7 +12,6 @@ import {
   EVENT_TYPES,
   eventContentCopy,
   PLATFORMS,
-  SKILL_LEVELS,
 } from "@/lib/constants";
 import type { Community } from "@/lib/types";
 import { cn, formatEventDate, formatEventTime, formatPrice } from "@/lib/utils";
@@ -49,8 +48,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
   const [capacity, setCapacity] = useState(8);
   const [price, setPrice] = useState(0);
   const [communityId, setCommunityId] = useState<string | null>(null);
-  // Audience
-  const [skill, setSkill] = useState("all");
+  // Details
   const [equipment, setEquipment] = useState("");
   const [rules, setRules] = useState("");
 
@@ -100,7 +98,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
         address,
         capacity,
         price,
-        skill_level: skill,
+        skill_level: "all",
         equipment,
         rules,
         community_id: communityId,
@@ -358,22 +356,6 @@ export function EventWizard({ communities }: { communities: Community[] }) {
 
       {step === 3 && (
         <div className="space-y-4">
-          {copy.showSkill && (
-            <div>
-              <p className="mb-2 text-sm font-semibold">Who is this for?</p>
-              <div className="flex flex-wrap gap-2">
-                {SKILL_LEVELS.map((s) => (
-                  <Chip
-                    key={s.value}
-                    selected={skill === s.value}
-                    onClick={() => setSkill(s.value)}
-                  >
-                    {s.label}
-                  </Chip>
-                ))}
-              </div>
-            </div>
-          )}
           <div>
             <p className="mb-2 text-sm font-semibold">Setup</p>
             <Textarea
