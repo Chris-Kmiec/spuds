@@ -95,9 +95,6 @@ export function eventContentCopy(eventType: string) {
   const watching = eventType === "watch_party";
   return {
     stepLabel: watching ? "Watching" : "Games",
-    hostTagline: watching
-      ? "Great watch parties start with one bold host. That's you."
-      : "Great gaming nights start with one brave host. That's you.",
     question: watching ? "What are we watching?" : "What are you playing?",
     addPlaceholder: watching
       ? "Add a show, movie, or event…"

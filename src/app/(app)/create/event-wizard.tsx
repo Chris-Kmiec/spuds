@@ -55,7 +55,21 @@ export function EventWizard({ communities }: { communities: Community[] }) {
   const [rules, setRules] = useState("");
 
   const copy = eventContentCopy(eventType);
+  const watching = eventType === "watch_party";
   const steps = ["Basics", copy.stepLabel, "Logistics", "Details", "Preview"];
+
+  // Action-oriented subtext: tells the host what to do in this step.
+  const stepSubtitles = [
+    "Start with the basics — a name, the vibe, and a cover.",
+    watching
+      ? "Add the shows, movies, or matches you're screening."
+      : "Add the games and platforms you'll play on.",
+    "Set the date, location, price, and capacity.",
+    watching
+      ? "Add your setup notes and any house rules."
+      : "Set who it's for, plus the gear and house rules.",
+    "Give it a final look, then publish.",
+  ];
 
   const startIso =
     date && startTime ? new Date(`${date}T${startTime}`).toISOString() : "";
@@ -99,7 +113,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
     <div className="space-y-6">
       <header className="pt-2">
         <h1 className="font-display text-3xl font-black">Host an event</h1>
-        <p className="text-soil-800/60">{copy.hostTagline}</p>
+        <p className="text-soil-800/60">{stepSubtitles[step]}</p>
       </header>
 
       {/* step indicator */}
