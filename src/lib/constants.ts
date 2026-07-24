@@ -65,6 +65,7 @@ export const GOALS = [
 
 export const EVENT_TYPES = [
   { value: "gaming_party", label: "Gaming party" },
+  { value: "board_game", label: "Board game night" },
   { value: "watch_party", label: "Watch party" },
   { value: "club", label: "Club meetup" },
 ] as const;
@@ -91,18 +92,49 @@ export const WATCH_SUGGESTIONS = [
   "The Game Awards",
 ];
 
-/** Type-aware copy so the wizard and event page speak "watch" vs "play". */
+// Board game nights are tabletop — popular titles plus a bring-your-own option.
+export const BOARD_GAME_SUGGESTIONS = [
+  "Catan",
+  "Wingspan",
+  "Ticket to Ride",
+  "Codenames",
+  "Carcassonne",
+  "Azul",
+  "Dungeons & Dragons",
+  "Pandemic",
+  "Root",
+  "Bring your own",
+];
+
+/** Type-aware copy so the wizard and event page speak the right language. */
 export function eventContentCopy(eventType: string) {
-  const watching = eventType === "watch_party";
+  if (eventType === "watch_party") {
+    return {
+      stepLabel: "Watching",
+      question: "What are we watching?",
+      addPlaceholder: "Add a show, movie, or event…",
+      sectionTitle: "What we're watching",
+      suggestions: WATCH_SUGGESTIONS,
+      showPlatforms: false,
+    };
+  }
+  if (eventType === "board_game") {
+    return {
+      stepLabel: "Games",
+      question: "Which board games?",
+      addPlaceholder: "Add a board game…",
+      sectionTitle: "What we're playing",
+      suggestions: BOARD_GAME_SUGGESTIONS,
+      showPlatforms: false,
+    };
+  }
   return {
-    stepLabel: watching ? "Watching" : "Games",
-    question: watching ? "What are we watching?" : "What are you playing?",
-    addPlaceholder: watching
-      ? "Add a show, movie, or event…"
-      : "Add another game…",
-    sectionTitle: watching ? "What we're watching" : "What we're playing",
-    suggestions: watching ? WATCH_SUGGESTIONS : POPULAR_GAMES.slice(0, 14),
-    showPlatforms: !watching,
+    stepLabel: "Games",
+    question: "What are you playing?",
+    addPlaceholder: "Add another game…",
+    sectionTitle: "What we're playing",
+    suggestions: POPULAR_GAMES.slice(0, 14),
+    showPlatforms: true,
   };
 }
 

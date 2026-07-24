@@ -54,18 +54,20 @@ export function EventWizard({ communities }: { communities: Community[] }) {
 
   const copy = eventContentCopy(eventType);
   const watching = eventType === "watch_party";
+  const boardGame = eventType === "board_game";
   const steps = ["Basics", copy.stepLabel, "Logistics", "Details", "Preview"];
 
   // Action-oriented subtext: tells the host what to do in this step.
+  const contentSubtitle = watching
+    ? "Add the shows, movies, or matches you're screening."
+    : boardGame
+      ? "Add the board games you'll bring to the table."
+      : "Add the games and platforms you'll play on.";
   const stepSubtitles = [
     "Start with the basics — a name, the vibe, and a cover.",
-    watching
-      ? "Add the shows, movies, or matches you're screening."
-      : "Add the games and platforms you'll play on.",
+    contentSubtitle,
     "Set the date, location, price, and capacity.",
-    watching
-      ? "Add your setup notes and any house rules."
-      : "Set who it's for, plus the gear and house rules.",
+    "Add your setup notes and any house rules.",
     "Give it a final look, then publish.",
   ];
 
@@ -362,9 +364,11 @@ export function EventWizard({ communities }: { communities: Community[] }) {
               value={equipment}
               onChange={(e) => setEquipment(e.target.value)}
               placeholder={
-                eventType === "watch_party"
+                watching
                   ? "Setup — screen, sound, seating, snacks (e.g. “Projector + surround, BYO blanket, popcorn provided”)"
-                  : "Equipment — what's provided, what to bring (e.g. “4 setups provided, BYO controller”)"
+                  : boardGame
+                    ? "Setup — table space, snacks, which games to bring (e.g. “Big table, we provide Catan, BYO favorites”)"
+                    : "Equipment — what's provided, what to bring (e.g. “4 setups provided, BYO controller”)"
               }
             />
           </div>

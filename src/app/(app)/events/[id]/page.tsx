@@ -17,6 +17,7 @@ import {
   ArrowLeft,
   CalendarDays,
   Clapperboard,
+  Dices,
   Gamepad2,
   MapPin,
   MessageCircle,
@@ -280,6 +281,8 @@ export default async function EventDetailPage({
             <h2 className="mb-2 flex items-center gap-2 font-display text-lg font-extrabold">
               {event.event_type === "watch_party" ? (
                 <Clapperboard className="size-5 text-soil-800/40" />
+              ) : event.event_type === "board_game" ? (
+                <Dices className="size-5 text-soil-800/40" />
               ) : (
                 <Gamepad2 className="size-5 text-soil-800/40" />
               )}{" "}
@@ -298,7 +301,10 @@ export default async function EventDetailPage({
             <div>
               <h3 className="mb-1 flex items-center gap-2 font-semibold">
                 <Wrench className="size-4 text-soil-800/50" />{" "}
-                {event.event_type === "watch_party" ? "Setup" : "Equipment"}
+                {event.event_type === "watch_party" ||
+                event.event_type === "board_game"
+                  ? "Setup"
+                  : "Equipment"}
               </h3>
               <p className="text-sm text-soil-800/70">{event.equipment}</p>
             </div>

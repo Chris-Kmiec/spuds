@@ -240,7 +240,24 @@ values
    'The Corner Bar (back room)', '2934 N Sheffield Ave, Chicago, IL', 41.9356, -87.6539,
    40, 0, 'all',
    'Projector + surround provided. Grab a seat early; taco bar opens at kickoff.',
-   'Spoiler-free if you''re late. Cheer hard, boo softly.', true, 'published');
+   'Spoiler-free if you''re late. Cheer hard, boo softly.', true, 'published'),
+
+  -- A board game night to showcase the tabletop event type
+  ('e0000000-0000-0000-0000-000000000011',
+   (select id from public.profiles where username = 'cozy_cass'),
+   'c0000000-0000-0000-0000-000000000004',
+   'Cozy Board Game Night',
+   'Low-key tabletop hangout at the café. We''ll have Catan, Wingspan, and Azul out, plus a teaching table for anyone new to a game. Bring a favorite if you''ve got one — we love learning new ones.',
+   'https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?w=1200&q=80',
+   'board_game',
+   array['Catan', 'Wingspan', 'Azul', 'Codenames'],
+   array[]::text[],
+   date_trunc('hour', now()) + interval '2 days 18 hours',
+   date_trunc('hour', now()) + interval '2 days 22 hours',
+   'Kopi Café', '5317 N Clark St, Chicago, IL', 41.9790, -87.6684,
+   16, 0, 'all',
+   'Big tables and a teaching corner. Café asks each guest order something. BYO games welcome.',
+   'Newbies encouraged — someone will teach you. Snacks off the board, please.', false, 'published');
 
 -- ---------- RSVPs (trigger adds attendees to event chats) ----------
 insert into public.event_attendees (event_id, user_id, status, message)
@@ -267,7 +284,9 @@ from (values
   ('e0000000-0000-0000-0000-000000000009', 'fps_frank',    null),
   ('e0000000-0000-0000-0000-000000000010', 'dpad_dana',    'Bringing a jersey'),
   ('e0000000-0000-0000-0000-000000000010', 'lan_larry',    null),
-  ('e0000000-0000-0000-0000-000000000010', 'indie_izzy',   'Here for the tacos, staying for the game')
+  ('e0000000-0000-0000-0000-000000000010', 'indie_izzy',   'Here for the tacos, staying for the game'),
+  ('e0000000-0000-0000-0000-000000000011', 'indie_izzy',   'Teaching Wingspan if anyone wants in'),
+  ('e0000000-0000-0000-0000-000000000011', 'mario_maria',  null)
 ) as v (event_id, username, msg)
 join public.profiles p on p.username = v.username;
 
