@@ -64,16 +64,17 @@ export const GOALS = [
 ];
 
 export const EVENT_TYPES = [
-  { value: "tournament", label: "Tournament" },
-  { value: "lan", label: "LAN party" },
-  { value: "club", label: "Club meetup" },
+  { value: "gaming_party", label: "Gaming party" },
   { value: "watch_party", label: "Watch party" },
+  { value: "club", label: "Club meetup" },
 ] as const;
 
-// Kept for legacy rows that predate the type cleanup.
+// Includes legacy labels for rows that predate the type cleanup.
 export const EVENT_TYPE_LABELS: Record<string, string> = {
   ...Object.fromEntries(EVENT_TYPES.map((t) => [t.value, t.label])),
   casual: "Meetup",
+  lan: "Gaming party",
+  tournament: "Gaming party",
 };
 
 // Watch parties are about content, not games — shows, movies, esports, etc.

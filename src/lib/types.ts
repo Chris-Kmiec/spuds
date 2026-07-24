@@ -28,7 +28,7 @@ export type EventRow = {
   title: string;
   description: string | null;
   image_url: string | null;
-  event_type: "tournament" | "lan" | "club" | "watch_party" | "casual";
+  event_type: "gaming_party" | "watch_party" | "club";
   games: string[];
   platforms: string[];
   start_time: string;

@@ -34,7 +34,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState(DEFAULT_EVENT_IMAGES[0]);
   const [usingUpload, setUsingUpload] = useState(false);
-  const [eventType, setEventType] = useState<string>("club");
+  const [eventType, setEventType] = useState<string>("gaming_party");
   // Games
   const [games, setGames] = useState<string[]>([]);
   const [customGame, setCustomGame] = useState("");
