@@ -143,7 +143,7 @@ export default async function EventDetailPage({
               {EVENT_TYPE_LABELS[event.event_type]}
             </Badge>
             {isPast && (
-              <Badge className="bg-white/90 text-soil-800/70">Past event</Badge>
+              <Badge className="bg-white/90 text-soil-800/70">Past party</Badge>
             )}
           </div>
           <h1 className="font-display text-2xl font-black text-white drop-shadow">
@@ -267,7 +267,7 @@ export default async function EventDetailPage({
         {event.description && (
           <Card className="p-5">
             <h2 className="mb-2 font-display text-lg font-extrabold">
-              About this event
+              About this party
             </h2>
             <p className="whitespace-pre-line text-soil-800/80">
               {event.description}
@@ -361,7 +361,7 @@ export default async function EventDetailPage({
         {canChat && conversation && (
           <Link href={`/messages/${conversation.id}`} className="block">
             <Button variant="outline" className="w-full">
-              <MessageCircle className="size-4" /> Open event chat
+              <MessageCircle className="size-4" /> Open party chat
             </Button>
           </Link>
         )}

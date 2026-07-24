@@ -51,7 +51,7 @@ export default async function ConversationPage({
 
   const title =
     conversation.type === "event"
-      ? (event?.title ?? "Event chat")
+      ? (event?.title ?? "Party chat")
       : participants
           .filter((p) => p.id !== userId)
           .map((p) => p.display_name ?? p.username)
@@ -75,7 +75,7 @@ export default async function ConversationPage({
               className="text-xs font-semibold text-spud-500"
             >
               {formatEventDate(event.start_time)} ·{" "}
-              {formatEventTime(event.start_time)} · View event →
+              {formatEventTime(event.start_time)} · View party →
             </Link>
           )}
         </div>

@@ -39,7 +39,7 @@ export function DiscoverFilters() {
         <Input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search events, games…"
+          placeholder="Search parties, games…"
           className="pl-11"
         />
       </div>

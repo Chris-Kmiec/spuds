@@ -112,7 +112,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
   return (
     <div className="space-y-6">
       <header className="pt-2">
-        <h1 className="font-display text-3xl font-black">Host an event</h1>
+        <h1 className="font-display text-3xl font-black">Host a party</h1>
         <p className="text-soil-800/60">{stepSubtitles[step]}</p>
       </header>
 
@@ -140,7 +140,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
           <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Event title — e.g. “Mario Kart & Pizza Night”"
+            placeholder="Party title — e.g. “Mario Kart & Pizza Night”"
             maxLength={80}
           />
           <Textarea
@@ -150,7 +150,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
             maxLength={2000}
           />
           <div>
-            <p className="mb-2 text-sm font-semibold">Event type</p>
+            <p className="mb-2 text-sm font-semibold">Party type</p>
             <div className="flex flex-wrap gap-2">
               {EVENT_TYPES.map((t) => (
                 <Chip
@@ -172,7 +172,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
                 setImageUrl(url);
                 setUsingUpload(true);
               }}
-              label="Upload your event photo"
+              label="Upload your party photo"
             />
             <p className="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-soil-800/50">
               Or pick one
@@ -416,8 +416,8 @@ export function EventWizard({ communities }: { communities: Community[] }) {
               </p>
             )}
             <p className="rounded-xl bg-cream-100 px-3 py-2 text-xs text-soil-800/60">
-              Publishing creates your event chat automatically. You can cancel
-              the event any time from your host dashboard.
+              Publishing opens your group chat automatically. You can cancel the
+              party any time from your host dashboard.
             </p>
           </div>
         </Card>
@@ -445,7 +445,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
           </Button>
         ) : (
           <Button className="flex-1" onClick={publish} disabled={pending}>
-            {pending ? "Publishing…" : "Publish event"}
+            {pending ? "Publishing…" : "Publish party"}
           </Button>
         )}
       </div>

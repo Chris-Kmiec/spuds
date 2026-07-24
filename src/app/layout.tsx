@@ -12,7 +12,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: { default: "Spuds — Find your player two", template: "%s · Spuds" },
   description:
-    "Spuds helps gamers build real-world friendships through shared gaming experiences. Discover gaming events near you, join communities, and host your own.",
+    "Spuds helps gamers build real-world friendships through shared gaming experiences. Discover gaming parties near you, join communities, and host your own.",
 };
 
 export const viewport: Viewport = {

@@ -59,23 +59,23 @@ export const GOALS = [
   "Find a squad",
   "Improve skills",
   "Try new games",
-  "Host events",
+  "Host parties",
   "Build community",
 ];
 
 export const EVENT_TYPES = [
-  { value: "gaming_party", label: "Gaming party" },
-  { value: "board_game", label: "Board game night" },
-  { value: "watch_party", label: "Watch party" },
-  { value: "club", label: "Club meetup" },
+  { value: "gaming_party", label: "Video games" },
+  { value: "board_game", label: "Tabletop games" },
+  { value: "watch_party", label: "TV and movies" },
 ] as const;
 
 // Includes legacy labels for rows that predate the type cleanup.
 export const EVENT_TYPE_LABELS: Record<string, string> = {
   ...Object.fromEntries(EVENT_TYPES.map((t) => [t.value, t.label])),
-  casual: "Meetup",
-  lan: "Gaming party",
-  tournament: "Gaming party",
+  casual: "Video games",
+  lan: "Video games",
+  tournament: "Video games",
+  club: "Video games",
 };
 
 // Watch parties are about content, not games — shows, movies, esports, etc.
@@ -112,7 +112,7 @@ export function eventContentCopy(eventType: string) {
     return {
       stepLabel: "Watching",
       question: "What are we watching?",
-      addPlaceholder: "Add a show, movie, or event…",
+      addPlaceholder: "Add a show, movie, or match…",
       sectionTitle: "What we're watching",
       suggestions: WATCH_SUGGESTIONS,
       showPlatforms: false,

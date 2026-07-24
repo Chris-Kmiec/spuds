@@ -28,7 +28,7 @@ export async function rsvp(
   ]);
 
   if (!event || event.status !== "published")
-    return { error: "This event isn't open for RSVPs." };
+    return { error: "This party isn't open for RSVPs." };
   if (event.host_id === user.id)
     return { error: "You're the host — you're already going!" };
 
@@ -93,7 +93,7 @@ export async function submitReview(
 
   if (error) {
     if (error.code === "23505")
-      return { error: "You already reviewed this event." };
+      return { error: "You already reviewed this party." };
     return { error: error.message };
   }
 

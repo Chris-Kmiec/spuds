@@ -85,7 +85,7 @@ export default async function MessagesPage() {
       <header className="pt-2">
         <h1 className="font-display text-3xl font-black">Messages</h1>
         <p className="text-soil-800/60">
-          Event chats open automatically when you RSVP.
+          Party chats open automatically when you RSVP.
         </p>
       </header>
 
@@ -95,7 +95,7 @@ export default async function MessagesPage() {
           <p className="mt-2 font-semibold">No conversations yet.</p>
           <p className="mt-1 text-sm">
             <Link href="/discover" className="font-semibold text-spud-500">
-              Join an event
+              Join a party
             </Link>{" "}
             and its chat will show up here.
           </p>
@@ -108,7 +108,7 @@ export default async function MessagesPage() {
           const otherPeople = others.get(c.id) ?? [];
           const title =
             c.type === "event"
-              ? (c.event?.title ?? "Event chat")
+              ? (c.event?.title ?? "Party chat")
               : otherPeople
                   .map((p) => p.display_name ?? p.username)
                   .join(", ") || "Direct message";

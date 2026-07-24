@@ -42,7 +42,7 @@ export function ReviewForm({
     <Card className="space-y-4 p-5">
       <div>
         <h2 className="font-display text-lg font-extrabold">
-          How was {hostName}&apos;s event?
+          How was {hostName}&apos;s party?
         </h2>
         <p className="text-sm text-soil-800/60">
           Reviews build trust for the whole community.

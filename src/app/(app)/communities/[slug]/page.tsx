@@ -122,7 +122,7 @@ export default async function CommunityDetailPage({
 
         <section className="space-y-3">
           <h2 className="font-display text-lg font-extrabold">
-            Upcoming events
+            Upcoming parties
           </h2>
           {events.length === 0 && (
             <Card className="p-6 text-center text-sm text-soil-800/60">

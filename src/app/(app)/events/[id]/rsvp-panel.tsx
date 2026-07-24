@@ -37,7 +37,7 @@ export function RsvpPanel({
             variant="outline"
             onClick={() => router.push("/create/manage")}
           >
-            Manage your event
+            Manage your party
           </Button>
         </div>
       </div>
@@ -77,7 +77,7 @@ export function RsvpPanel({
               </p>
               <p className="text-xs text-soil-800/60">
                 {myStatus === "going"
-                  ? "The event chat is open for you."
+                  ? "Your party chat is open for you."
                   : "We'll bump you in if a spot opens up."}
               </p>
             </div>
@@ -88,7 +88,7 @@ export function RsvpPanel({
         ) : !open ? (
           <Button className="w-full" size="lg" onClick={() => setOpen(true)}>
             {spotsLeft > 0
-              ? `Join this event · ${spotsLeft} ${spotsLeft === 1 ? "spot" : "spots"} left`
+              ? `Join this party · ${spotsLeft} ${spotsLeft === 1 ? "spot" : "spots"} left`
               : "Join waitlist"}
           </Button>
         ) : (

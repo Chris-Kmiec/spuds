@@ -138,12 +138,12 @@ export default async function DiscoverPage({
       {filtering ? (
         <section className="space-y-4">
           <h2 className="font-display text-lg font-extrabold">
-            {cards.length} {cards.length === 1 ? "event" : "events"} found
+            {cards.length} {cards.length === 1 ? "party" : "parties"} found
           </h2>
           {cards.length === 0 && (
             <Card className="p-8 text-center text-soil-800/60">
               <div className="text-3xl">🥔</div>
-              <p className="mt-2 font-semibold">No events match — yet.</p>
+              <p className="mt-2 font-semibold">No parties match — yet.</p>
               <p className="mt-1 text-sm">
                 Try different filters, or{" "}
                 <Link href="/create" className="font-semibold text-spud-500">
@@ -234,7 +234,7 @@ export default async function DiscoverPage({
               <Card className="p-8 text-center text-soil-800/60">
                 <div className="text-3xl">🌱</div>
                 <p className="mt-2 font-semibold">
-                  No upcoming events near you yet.
+                  No upcoming parties near you yet.
                 </p>
                 <p className="mt-1 text-sm">
                   Be the first —{" "}

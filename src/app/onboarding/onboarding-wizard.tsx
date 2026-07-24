@@ -20,7 +20,7 @@ const steps = [
   { key: "platforms", title: "Your platforms", hint: "Where do you play?" },
   { key: "style", title: "Your play style", hint: "How do you like your game nights?" },
   { key: "when", title: "When & why", hint: "When can you play, and what are you here for?" },
-  { key: "location", title: "Where are you?", hint: "We use this to find events near you." },
+  { key: "location", title: "Where are you?", hint: "We use this to find parties near you." },
 ] as const;
 
 function toggle(list: string[], value: string) {
@@ -230,7 +230,7 @@ export function OnboardingWizard({ username }: { username: string }) {
               </Button>
               <p className="text-xs text-soil-800/50">
                 Your exact location is never shown to other players — only
-                rough distances to events.
+                rough distances to parties.
               </p>
             </div>
           )}
@@ -265,7 +265,7 @@ export function OnboardingWizard({ username }: { username: string }) {
             disabled={!canContinue || pending}
             onClick={finish}
           >
-            {pending ? "Setting up your feed…" : "Show me events"}
+            {pending ? "Setting up your feed…" : "Show me parties"}
           </Button>
         )}
       </div>

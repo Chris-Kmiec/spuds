@@ -30,7 +30,7 @@ export async function createEvent(input: NewEventInput) {
   } = await supabase.auth.getUser();
   if (!user) return { error: "Not signed in" };
 
-  if (!input.title.trim()) return { error: "Give your event a title." };
+  if (!input.title.trim()) return { error: "Give your party a title." };
   if (input.games.length === 0) return { error: "Pick at least one game." };
   if (!input.start_time) return { error: "Pick a date and time." };
   if (new Date(input.start_time) < new Date())

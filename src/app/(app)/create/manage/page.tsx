@@ -71,14 +71,14 @@ export default async function HostDashboardPage() {
         <div>
           <h1 className="font-display text-2xl font-black">Host dashboard</h1>
           <p className="text-sm text-soil-800/60">
-            Your events, your people, your numbers.
+            Your parties, your people, your numbers.
           </p>
         </div>
       </header>
 
       {/* stats */}
       <div className="grid grid-cols-2 gap-3">
-        <StatCard label="Events hosted" value={String(events.length)} />
+        <StatCard label="Parties hosted" value={String(events.length)} />
         <StatCard label="Total RSVPs" value={String(totalRsvps)} />
         <StatCard
           label="Rating"
@@ -100,7 +100,7 @@ export default async function HostDashboardPage() {
           <p className="mt-2 font-semibold">You haven&apos;t hosted yet.</p>
           <p className="mt-1 text-sm">
             <Link href="/create" className="font-semibold text-spud-500">
-              Create your first event
+              Create your first party
             </Link>{" "}
             — hosts are how scenes get started.
           </p>
@@ -213,7 +213,7 @@ function Section({
       })}
       {title === "Past & completed" && events.length > 0 && (
         <p className="flex items-center gap-1 text-xs text-soil-800/50">
-          <Star className="size-3.5" /> Attendees can review you after events
+          <Star className="size-3.5" /> Attendees can review you after parties
           end — reviews power your host rating.
         </p>
       )}

@@ -33,7 +33,7 @@ export default async function LandingPage() {
           </h1>
           <p className="mt-4 max-w-md text-lg text-soil-800/70">
             Spuds helps gamers build real-world friendships through shared
-            gaming experiences. Discover events near you, meet your people,
+            gaming experiences. Discover parties near you, meet your people,
             and host nights they&apos;ll come back for.
           </p>
 
@@ -53,7 +53,7 @@ export default async function LandingPage() {
           <div className="mt-12 grid grid-cols-3 gap-3 text-center text-sm font-semibold text-soil-800/70">
             <div className="rounded-card bg-white p-4 shadow-sm">
               <MapPin className="mx-auto size-6 text-spud-400" />
-              <div className="mt-2">Discover events nearby</div>
+              <div className="mt-2">Discover parties nearby</div>
             </div>
             <div className="rounded-card bg-white p-4 shadow-sm">
               <Users className="mx-auto size-6 text-spud-400" />

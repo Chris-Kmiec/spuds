@@ -6,7 +6,7 @@ import type { Community } from "@/lib/types";
 import { LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 
-export const metadata = { title: "Host an event" };
+export const metadata = { title: "Host a party" };
 
 export default async function CreatePage() {
   const supabase = await createClient();
