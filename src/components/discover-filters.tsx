@@ -30,7 +30,6 @@ export function DiscoverFilters() {
   }, [q]);
 
   const activeType = params.get("type");
-  const freeOnly = params.get("free") === "1";
 
   return (
     <div className="space-y-3">
@@ -45,13 +44,6 @@ export function DiscoverFilters() {
       </div>
 
       <div className="scroll-rail flex gap-2 overflow-x-auto pb-1">
-        <Chip
-          selected={freeOnly}
-          onClick={() => setParam("free", freeOnly ? null : "1")}
-          className="shrink-0"
-        >
-          Free
-        </Chip>
         {EVENT_TYPES.map((t) => (
           <Chip
             key={t.value}

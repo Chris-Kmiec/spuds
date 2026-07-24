@@ -8,7 +8,6 @@ import {
   distanceMiles,
   formatEventDate,
   formatEventTime,
-  formatPrice,
 } from "@/lib/utils";
 import { CalendarDays, MapPin, Star, Users } from "lucide-react";
 import Image from "next/image";
@@ -63,17 +62,6 @@ export function EventCard({
           <div className="absolute left-3 top-3 flex gap-2">
             <Badge className="bg-white/90 text-soil-800/70 backdrop-blur">
               {EVENT_TYPE_LABELS[event.event_type]}
-            </Badge>
-          </div>
-          <div className="absolute right-3 top-3">
-            <Badge
-              tone={Number(event.price) === 0 ? "positive" : "neutral"}
-              className={cn(
-                "backdrop-blur",
-                Number(event.price) !== 0 && "bg-white/90 text-soil-800/70"
-              )}
-            >
-              {formatPrice(event.price)}
             </Badge>
           </div>
         </div>
