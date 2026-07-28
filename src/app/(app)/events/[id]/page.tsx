@@ -197,6 +197,60 @@ export default async function EventDetailPage({
           </div>
         </Card>
 
+        {/* description */}
+        {event.description && (
+          <Card className="p-5">
+            <h2 className="mb-2 font-display text-lg font-extrabold">
+              About this party
+            </h2>
+            <p className="whitespace-pre-line text-soil-800/80">
+              {event.description}
+            </p>
+          </Card>
+        )}
+
+        {/* the experience */}
+        <Card className="space-y-4 p-5">
+          <div>
+            <h2 className="mb-2 flex items-center gap-2 font-display text-lg font-extrabold">
+              {event.event_type === "watch_party" ? (
+                <Clapperboard className="size-5 text-soil-800/40" />
+              ) : event.event_type === "board_game" ? (
+                <Dices className="size-5 text-soil-800/40" />
+              ) : (
+                <Gamepad2 className="size-5 text-soil-800/40" />
+              )}{" "}
+              {eventContentCopy(event.event_type).sectionTitle}
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {event.games.map((g) => (
+                <Badge key={g}>{g}</Badge>
+              ))}
+              {event.platforms.map((p) => (
+                <Badge key={p}>{p}</Badge>
+              ))}
+            </div>
+          </div>
+          {event.equipment && (
+            <div>
+              <h3 className="mb-1 flex items-center gap-2 font-semibold">
+                <Wrench className="size-4 text-soil-800/50" />{" "}
+                {event.event_type === "watch_party" ||
+                event.event_type === "board_game"
+                  ? "Setup"
+                  : "Equipment"}
+              </h3>
+              <p className="text-sm text-soil-800/70">{event.equipment}</p>
+            </div>
+          )}
+          {event.rules && (
+            <div>
+              <h3 className="mb-1 font-semibold">House rules</h3>
+              <p className="text-sm text-soil-800/70">{event.rules}</p>
+            </div>
+          )}
+        </Card>
+
         {/* host / trust */}
         <Card className="p-5">
           <div className="flex items-center gap-3">
@@ -259,60 +313,6 @@ export default async function EventDetailPage({
                   </div>
                 )
               )}
-            </div>
-          )}
-        </Card>
-
-        {/* description */}
-        {event.description && (
-          <Card className="p-5">
-            <h2 className="mb-2 font-display text-lg font-extrabold">
-              About this party
-            </h2>
-            <p className="whitespace-pre-line text-soil-800/80">
-              {event.description}
-            </p>
-          </Card>
-        )}
-
-        {/* the experience */}
-        <Card className="space-y-4 p-5">
-          <div>
-            <h2 className="mb-2 flex items-center gap-2 font-display text-lg font-extrabold">
-              {event.event_type === "watch_party" ? (
-                <Clapperboard className="size-5 text-soil-800/40" />
-              ) : event.event_type === "board_game" ? (
-                <Dices className="size-5 text-soil-800/40" />
-              ) : (
-                <Gamepad2 className="size-5 text-soil-800/40" />
-              )}{" "}
-              {eventContentCopy(event.event_type).sectionTitle}
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {event.games.map((g) => (
-                <Badge key={g}>{g}</Badge>
-              ))}
-              {event.platforms.map((p) => (
-                <Badge key={p}>{p}</Badge>
-              ))}
-            </div>
-          </div>
-          {event.equipment && (
-            <div>
-              <h3 className="mb-1 flex items-center gap-2 font-semibold">
-                <Wrench className="size-4 text-soil-800/50" />{" "}
-                {event.event_type === "watch_party" ||
-                event.event_type === "board_game"
-                  ? "Setup"
-                  : "Equipment"}
-              </h3>
-              <p className="text-sm text-soil-800/70">{event.equipment}</p>
-            </div>
-          )}
-          {event.rules && (
-            <div>
-              <h3 className="mb-1 font-semibold">House rules</h3>
-              <p className="text-sm text-soil-800/70">{event.rules}</p>
             </div>
           )}
         </Card>
