@@ -59,6 +59,15 @@ export default async function EventDetailPage({
   const myRsvp = viewer
     ? (event.attendees.find((a) => a.user_id === viewer.id)?.status ?? null)
     : null;
+
+  // Where the viewer sits in the waitlist queue (oldest RSVP = #1).
+  const waitlist = event.attendees
+    .filter((a) => a.status === "waitlist")
+    .sort((a, b) => a.joined_at.localeCompare(b.joined_at));
+  const waitlistPosition =
+    myRsvp === "waitlist"
+      ? waitlist.findIndex((a) => a.user_id === viewer?.id) + 1
+      : null;
   const isHost = viewer?.id === event.host_id;
   const isPast =
     event.status === "completed" ||
@@ -380,6 +389,7 @@ export default async function EventDetailPage({
         eventId={event.id}
         myStatus={myRsvp}
         spotsLeft={spotsLeft}
+        waitlistPosition={waitlistPosition}
         isHost={isHost}
         isPast={isPast}
       />

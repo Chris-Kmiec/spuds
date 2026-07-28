@@ -10,12 +10,14 @@ export function RsvpPanel({
   eventId,
   myStatus,
   spotsLeft,
+  waitlistPosition,
   isHost,
   isPast,
 }: {
   eventId: string;
   myStatus: "going" | "waitlist" | "cancelled" | null;
   spotsLeft: number;
+  waitlistPosition: number | null;
   isHost: boolean;
   isPast: boolean;
 }) {
@@ -73,12 +75,14 @@ export function RsvpPanel({
               <p className="font-display font-extrabold text-sprout-600">
                 {myStatus === "going"
                   ? "You're going!"
-                  : "You're on the waitlist"}
+                  : waitlistPosition
+                    ? `You're #${waitlistPosition} on the waitlist`
+                    : "You're on the waitlist"}
               </p>
               <p className="text-xs text-soil-800/60">
                 {myStatus === "going"
                   ? "Your party chat is open for you."
-                  : "We'll bump you in if a spot opens up."}
+                  : "We'll bump you in automatically if a spot opens up."}
               </p>
             </div>
             <Button variant="outline" onClick={cancel} disabled={pending}>
