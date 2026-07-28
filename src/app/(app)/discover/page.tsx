@@ -1,5 +1,6 @@
 import { DiscoverFilters } from "@/components/discover-filters";
 import { EventCard, type EventCardData } from "@/components/event-card";
+import { NotificationBell } from "@/components/notification-bell";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getCurrentProfile } from "@/lib/data";
@@ -72,21 +73,32 @@ export default async function DiscoverPage({
   }
   if (params.type) query = query.eq("event_type", params.type);
 
-  const [{ data: eventsData }, { data: gamingProfile }, { data: communities }] =
-    await Promise.all([
-      query,
-      profile
-        ? supabase
-            .from("gaming_profiles")
-            .select("*")
-            .eq("user_id", profile.id)
-            .maybeSingle()
-        : Promise.resolve({ data: null }),
-      supabase
-        .from("communities")
-        .select("*, members:community_members(count)")
-        .limit(6),
-    ]);
+  const [
+    { data: eventsData },
+    { data: gamingProfile },
+    { data: communities },
+    { count: unreadCount },
+  ] = await Promise.all([
+    query,
+    profile
+      ? supabase
+          .from("gaming_profiles")
+          .select("*")
+          .eq("user_id", profile.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+    supabase
+      .from("communities")
+      .select("*, members:community_members(count)")
+      .limit(6),
+    profile
+      ? supabase
+          .from("notifications")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", profile.id)
+          .eq("read", false)
+      : Promise.resolve({ count: 0 }),
+  ]);
 
   const events = (eventsData ?? []) as unknown as RawEvent[];
 
@@ -132,14 +144,22 @@ export default async function DiscoverPage({
 
   return (
     <div className="space-y-6">
-      <header className="pt-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-soil-800/50">
-          {profile?.location ?? "Near you"}
-        </p>
-        <h1 className="font-display text-3xl font-black">
-          Hey {profile?.display_name?.split(" ")[0] ?? profile?.username} 👋
-        </h1>
-        <p className="text-soil-800/60">What are we playing this week?</p>
+      <header className="flex items-start justify-between pt-2">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-soil-800/50">
+            {profile?.location ?? "Near you"}
+          </p>
+          <h1 className="font-display text-3xl font-black">
+            Hey {profile?.display_name?.split(" ")[0] ?? profile?.username} 👋
+          </h1>
+          <p className="text-soil-800/60">What are we playing this week?</p>
+        </div>
+        {profile && (
+          <NotificationBell
+            userId={profile.id}
+            initialUnread={unreadCount ?? 0}
+          />
+        )}
       </header>
 
       <Suspense>

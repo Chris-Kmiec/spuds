@@ -85,6 +85,19 @@ export type Message = {
   sender?: Profile;
 };
 
+export type Notification = {
+  id: string;
+  user_id: string;
+  actor_id: string | null;
+  type: "waitlist_promoted" | "new_rsvp" | "new_review" | "new_follow";
+  event_id: string | null;
+  body: string;
+  link: string;
+  read: boolean;
+  created_at: string;
+  actor?: Pick<Profile, "username" | "display_name" | "avatar_url"> | null;
+};
+
 export type Review = {
   id: string;
   reviewer_id: string;
