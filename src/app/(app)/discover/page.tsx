@@ -28,6 +28,11 @@ function toCard(
   };
 }
 
+function isWeekend(iso: string) {
+  const day = new Date(iso).getDay(); // 0 = Sunday, 6 = Saturday
+  return day === 0 || day === 6;
+}
+
 function endOfWeekend() {
   const d = new Date();
   const day = d.getDay(); // 0 = Sunday
@@ -43,6 +48,7 @@ export default async function DiscoverPage({
   searchParams: Promise<{
     q?: string;
     type?: string;
+    when?: string;
   }>;
 }) {
   const params = await searchParams;
@@ -98,10 +104,17 @@ export default async function DiscoverPage({
     }
   }
 
-  const cards = events.map((e) => toCard(e, ratings));
+  let cards = events.map((e) => toCard(e, ratings));
   const gp = gamingProfile as GamingProfile | null;
 
-  const filtering = !!params.q || !!params.type;
+  // Day-of-week filter (Sat/Sun = weekend), matching how dates are displayed.
+  if (params.when === "weekend") {
+    cards = cards.filter((c) => isWeekend(c.start_time));
+  } else if (params.when === "weekday") {
+    cards = cards.filter((c) => !isWeekend(c.start_time));
+  }
+
+  const filtering = !!params.q || !!params.type || !!params.when;
 
   const featured = cards.filter((e) => e.featured);
   const favoriteGames = new Set(gp?.favorite_games ?? []);

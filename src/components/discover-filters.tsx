@@ -30,6 +30,7 @@ export function DiscoverFilters() {
   }, [q]);
 
   const activeType = params.get("type");
+  const activeWhen = params.get("when");
 
   return (
     <div className="space-y-3">
@@ -44,6 +45,21 @@ export function DiscoverFilters() {
       </div>
 
       <div className="scroll-rail flex gap-2 overflow-x-auto pb-1">
+        {[
+          { value: "weekday", label: "Weekdays" },
+          { value: "weekend", label: "Weekends" },
+        ].map((w) => (
+          <Chip
+            key={w.value}
+            selected={activeWhen === w.value}
+            onClick={() =>
+              setParam("when", activeWhen === w.value ? null : w.value)
+            }
+            className="shrink-0"
+          >
+            {w.label}
+          </Chip>
+        ))}
         {EVENT_TYPES.map((t) => (
           <Chip
             key={t.value}
