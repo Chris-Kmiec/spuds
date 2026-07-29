@@ -40,7 +40,7 @@ export default async function CommunitiesPage() {
         <div>
           <h1 className="font-display text-3xl font-black">Communities</h1>
           <p className="text-soil-800/60">
-            Events make friends. Communities keep them.
+            Parties make friends. Communities keep them.
           </p>
         </div>
         <Link href="/communities/new">

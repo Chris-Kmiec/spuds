@@ -13,7 +13,7 @@ export function CancelEventButton({ eventId }: { eventId: string }) {
   if (!confirming) {
     return (
       <Button variant="ghost" size="sm" onClick={() => setConfirming(true)}>
-        Cancel event
+        Cancel party
       </Button>
     );
   }
