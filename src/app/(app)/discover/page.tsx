@@ -220,6 +220,7 @@ export default async function DiscoverPage({
               location_name: c.location_name,
               image_url: c.image_url,
               type_label: EVENT_TYPE_LABELS[c.event_type] ?? "Party",
+              event_type: c.event_type,
               games: c.games,
               going: c.going,
               capacity: c.capacity,

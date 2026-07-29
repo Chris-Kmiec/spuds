@@ -16,10 +16,10 @@ import {
 import {
   ArrowLeft,
   CalendarDays,
-  Clapperboard,
   Dices,
   Gamepad2,
   Pencil,
+  Tv,
   MapPin,
   MessageCircle,
   ShieldCheck,
@@ -232,7 +232,7 @@ export default async function EventDetailPage({
           <div>
             <h2 className="mb-2 flex items-center gap-2 font-display text-lg font-extrabold">
               {event.event_type === "watch_party" ? (
-                <Clapperboard className="size-5 text-soil-800/40" />
+                <Tv className="size-5 text-soil-800/40" />
               ) : event.event_type === "board_game" ? (
                 <Dices className="size-5 text-soil-800/40" />
               ) : (
