@@ -2,7 +2,7 @@
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Card } from "@/components/ui/card";
-import { formatEventDate } from "@/lib/utils";
+import { formatEventDate, formatEventTime } from "@/lib/utils";
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef } from "react";
 
@@ -13,6 +13,13 @@ export type MapParty = {
   longitude: number | null;
   start_time: string;
   location_name: string | null;
+  image_url: string | null;
+  type_label: string;
+  games: string[];
+  going: number;
+  capacity: number;
+  host_name: string;
+  host_avatar: string | null;
 };
 
 function escapeHtml(s: string) {
@@ -62,15 +69,64 @@ export function PartiesMap({
       el.style.cssText =
         "width:18px;height:18px;border-radius:9999px;background:#FF6B8A;border:3px solid #fff;box-shadow:0 1px 5px rgba(39,39,39,.35);cursor:pointer;";
 
+      const spotsLeft = Math.max(0, p.capacity - p.going);
+      const spotsColor = spotsLeft <= 2 ? "#272727" : "#3ea54c";
+      const games = p.games
+        .slice(0, 2)
+        .map(
+          (g) =>
+            `<span style="background:rgba(39,39,39,.05);color:rgba(39,39,39,.7);border-radius:9999px;padding:2px 7px;font-size:11px;font-weight:600">${escapeHtml(
+              g
+            )}</span>`
+        )
+        .join("");
+
       const popup = new mapboxgl.Popup({
         offset: 16,
         closeButton: false,
+        maxWidth: "252px",
       }).setHTML(
-        `<a href="/events/${p.id}" style="font-weight:800;color:#272727;text-decoration:none;font-family:inherit">${escapeHtml(
-          p.title
-        )}</a><div style="color:#27272799;font-size:12px;margin-top:2px">${formatEventDate(
-          p.start_time
-        )}${p.location_name ? " · " + escapeHtml(p.location_name) : ""}</div>`
+        `<a href="/events/${p.id}" class="spuds-popup">
+          ${
+            p.image_url
+              ? `<div class="spuds-popup-img"><img src="${escapeHtml(
+                  p.image_url
+                )}" alt="" loading="lazy" />
+                 <span class="spuds-popup-type">${escapeHtml(
+                   p.type_label
+                 )}</span></div>`
+              : ""
+          }
+          <div class="spuds-popup-body">
+            <div class="spuds-popup-title">${escapeHtml(p.title)}</div>
+            ${games ? `<div class="spuds-popup-games">${games}</div>` : ""}
+            <div class="spuds-popup-meta">${formatEventDate(
+              p.start_time
+            )} · ${formatEventTime(p.start_time)}</div>
+            ${
+              p.location_name
+                ? `<div class="spuds-popup-meta">${escapeHtml(
+                    p.location_name
+                  )}</div>`
+                : ""
+            }
+            <div class="spuds-popup-foot">
+              <span class="spuds-popup-host">
+                ${
+                  p.host_avatar
+                    ? `<img src="${escapeHtml(
+                        p.host_avatar
+                      )}" alt="" class="spuds-popup-avatar" />`
+                    : ""
+                }
+                ${escapeHtml(p.host_name)}
+              </span>
+              <span style="color:${spotsColor};font-weight:700">${p.going}/${
+                p.capacity
+              }</span>
+            </div>
+          </div>
+        </a>`
       );
 
       new mapboxgl.Marker({ element: el })

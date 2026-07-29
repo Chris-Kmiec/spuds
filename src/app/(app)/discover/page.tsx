@@ -4,6 +4,7 @@ import { NotificationBell } from "@/components/notification-bell";
 import { PartiesMap } from "@/components/parties-map";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { EVENT_TYPE_LABELS } from "@/lib/constants";
 import { getCurrentProfile } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { Community, EventRow, GamingProfile, Profile } from "@/lib/types";
@@ -217,6 +218,13 @@ export default async function DiscoverPage({
               longitude: c.longitude,
               start_time: c.start_time,
               location_name: c.location_name,
+              image_url: c.image_url,
+              type_label: EVENT_TYPE_LABELS[c.event_type] ?? "Party",
+              games: c.games,
+              going: c.going,
+              capacity: c.capacity,
+              host_name: c.host.display_name ?? c.host.username,
+              host_avatar: c.host.avatar_url,
             }))}
             center={mapCenter}
             token={mapboxToken}
