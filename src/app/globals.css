@@ -52,7 +52,7 @@ h3 {
 }
 
 /* ---- Map popups: a mini party card inside Mapbox's popup ---- */
-.mapboxgl-popup-content {
+.mapboxgl-popup .mapboxgl-popup-content {
   padding: 0;
   border-radius: 1rem;
   overflow: hidden;
@@ -64,6 +64,15 @@ h3 {
   display: block;
   text-decoration: none;
   color: var(--color-soil-800);
+}
+/* Mapbox focuses the popup on open — suppress the browser's default ring,
+   but keep a brand-colored one for keyboard users. */
+.spuds-popup:focus {
+  outline: none;
+}
+.spuds-popup:focus-visible {
+  outline: 2px solid var(--color-spud-400);
+  outline-offset: -2px;
 }
 
 .spuds-popup-img {
