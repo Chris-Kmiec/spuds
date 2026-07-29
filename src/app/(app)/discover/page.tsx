@@ -174,38 +174,35 @@ export default async function DiscoverPage({
           </h1>
           <p className="text-soil-800/60">What are we playing this week?</p>
         </div>
-        {profile && (
-          <NotificationBell
-            userId={profile.id}
-            initialUnread={unreadCount ?? 0}
-          />
-        )}
+        <div className="flex items-center gap-2">
+          <Link
+            href={isMap ? listHref : mapHref}
+            aria-label={isMap ? "Back to list" : "View parties on a map"}
+            className={cn(
+              "rounded-full p-2.5 shadow-sm shadow-soil-800/5 transition-colors",
+              isMap
+                ? "bg-spud-400 text-white hover:bg-spud-500"
+                : "bg-white text-soil-800/70 hover:bg-cream-100"
+            )}
+          >
+            {isMap ? (
+              <List className="size-5" />
+            ) : (
+              <MapIcon className="size-5" />
+            )}
+          </Link>
+          {profile && (
+            <NotificationBell
+              userId={profile.id}
+              initialUnread={unreadCount ?? 0}
+            />
+          )}
+        </div>
       </header>
 
       <Suspense>
         <DiscoverFilters />
       </Suspense>
-
-      <div className="flex w-fit rounded-full border border-soil-800/10 bg-white p-1 text-sm font-semibold">
-        <Link
-          href={listHref}
-          className={cn(
-            "flex items-center gap-1.5 rounded-full px-4 py-1.5 transition-colors",
-            !isMap ? "bg-spud-400 text-white" : "text-soil-800/60"
-          )}
-        >
-          <List className="size-4" /> List
-        </Link>
-        <Link
-          href={mapHref}
-          className={cn(
-            "flex items-center gap-1.5 rounded-full px-4 py-1.5 transition-colors",
-            isMap ? "bg-spud-400 text-white" : "text-soil-800/60"
-          )}
-        >
-          <MapIcon className="size-4" /> Map
-        </Link>
-      </div>
 
       {isMap ? (
         <section className="space-y-3">
