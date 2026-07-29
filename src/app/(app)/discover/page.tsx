@@ -1,12 +1,14 @@
 import { DiscoverFilters } from "@/components/discover-filters";
 import { EventCard, type EventCardData } from "@/components/event-card";
 import { NotificationBell } from "@/components/notification-bell";
+import { PartiesMap } from "@/components/parties-map";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getCurrentProfile } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { Community, EventRow, GamingProfile, Profile } from "@/lib/types";
-import { Users } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { List, Map as MapIcon, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -50,6 +52,7 @@ export default async function DiscoverPage({
     q?: string;
     type?: string;
     when?: string;
+    view?: string;
   }>;
 }) {
   const params = await searchParams;
@@ -142,6 +145,23 @@ export default async function DiscoverPage({
     ? { latitude: profile.latitude, longitude: profile.longitude }
     : null;
 
+  const isMap = params.view === "map";
+  const mapCenter = {
+    lat: profile?.latitude ?? 41.8781, // Chicago fallback
+    lng: profile?.longitude ?? -87.6298,
+  };
+  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? null;
+
+  // Preserve active filters when switching between list and map.
+  const qs = new URLSearchParams();
+  if (params.q) qs.set("q", params.q);
+  if (params.type) qs.set("type", params.type);
+  if (params.when) qs.set("when", params.when);
+  const listHref = `/discover${qs.toString() ? `?${qs}` : ""}`;
+  const mapQs = new URLSearchParams(qs);
+  mapQs.set("view", "map");
+  const mapHref = `/discover?${mapQs}`;
+
   return (
     <div className="space-y-6">
       <header className="flex items-start justify-between pt-2">
@@ -166,7 +186,46 @@ export default async function DiscoverPage({
         <DiscoverFilters />
       </Suspense>
 
-      {filtering ? (
+      <div className="flex w-fit rounded-full border border-soil-800/10 bg-white p-1 text-sm font-semibold">
+        <Link
+          href={listHref}
+          className={cn(
+            "flex items-center gap-1.5 rounded-full px-4 py-1.5 transition-colors",
+            !isMap ? "bg-spud-400 text-white" : "text-soil-800/60"
+          )}
+        >
+          <List className="size-4" /> List
+        </Link>
+        <Link
+          href={mapHref}
+          className={cn(
+            "flex items-center gap-1.5 rounded-full px-4 py-1.5 transition-colors",
+            isMap ? "bg-spud-400 text-white" : "text-soil-800/60"
+          )}
+        >
+          <MapIcon className="size-4" /> Map
+        </Link>
+      </div>
+
+      {isMap ? (
+        <section className="space-y-3">
+          <p className="text-sm text-soil-800/60">
+            {cards.length} {cards.length === 1 ? "party" : "parties"} on the map
+          </p>
+          <PartiesMap
+            parties={cards.map((c) => ({
+              id: c.id,
+              title: c.title,
+              latitude: c.latitude,
+              longitude: c.longitude,
+              start_time: c.start_time,
+              location_name: c.location_name,
+            }))}
+            center={mapCenter}
+            token={mapboxToken}
+          />
+        </section>
+      ) : filtering ? (
         <section className="space-y-4">
           <h2 className="font-display text-lg font-extrabold">
             {cards.length} {cards.length === 1 ? "party" : "parties"} found
