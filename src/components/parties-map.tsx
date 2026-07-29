@@ -85,6 +85,9 @@ export function PartiesMap({
         offset: 16,
         closeButton: false,
         maxWidth: "252px",
+        // Don't steal focus on open, otherwise a mouse click paints a
+        // focus ring on the card. Keyboard users can still tab into it.
+        focusAfterOpen: false,
       }).setHTML(
         `<a href="/events/${p.id}" class="spuds-popup">
           ${
