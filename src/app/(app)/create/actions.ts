@@ -67,6 +67,70 @@ export async function createEvent(input: NewEventInput) {
   redirect(`/events/${data.id}`);
 }
 
+export type EditEventInput = {
+  title: string;
+  description: string;
+  image_url: string;
+  games: string[];
+  platforms: string[];
+  start_time: string; // ISO
+  end_time: string | null;
+  location_name: string;
+  address: string;
+  capacity: number;
+  price: number;
+  equipment: string;
+  rules: string;
+};
+
+export async function editEvent(eventId: string, input: EditEventInput) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not signed in" };
+
+  if (!input.title.trim()) return { error: "Give your party a title." };
+  if (input.games.length === 0)
+    return { error: "Pick at least one game." };
+  if (!input.start_time) return { error: "Pick a date and time." };
+
+  // Never shrink capacity below the number already confirmed as going.
+  const { count: going } = await supabase
+    .from("event_attendees")
+    .select("*", { count: "exact", head: true })
+    .eq("event_id", eventId)
+    .eq("status", "going");
+  const capacity = Math.max(going ?? 2, Math.min(200, input.capacity));
+
+  const { error } = await supabase
+    .from("events")
+    .update({
+      title: input.title.trim(),
+      description: input.description.trim() || null,
+      image_url: input.image_url || null,
+      games: input.games,
+      platforms: input.platforms,
+      start_time: input.start_time,
+      end_time: input.end_time,
+      location_name: input.location_name.trim() || null,
+      address: input.address.trim() || null,
+      capacity,
+      price: Math.max(0, input.price),
+      equipment: input.equipment.trim() || null,
+      rules: input.rules.trim() || null,
+    })
+    .eq("id", eventId)
+    .eq("host_id", user.id); // RLS also enforces this
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/events/${eventId}`);
+  revalidatePath("/create/manage");
+  revalidatePath("/discover");
+  redirect(`/events/${eventId}`);
+}
+
 export async function cancelEvent(eventId: string) {
   const supabase = await createClient();
   const {

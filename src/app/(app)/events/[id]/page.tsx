@@ -19,6 +19,7 @@ import {
   Clapperboard,
   Dices,
   Gamepad2,
+  Pencil,
   MapPin,
   MessageCircle,
   ShieldCheck,
@@ -140,6 +141,14 @@ export default async function EventDetailPage({
         >
           <ArrowLeft className="size-5" />
         </Link>
+        {isHost && !isPast && (
+          <Link
+            href={`/events/${event.id}/edit`}
+            className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-2 text-sm font-semibold shadow backdrop-blur"
+          >
+            <Pencil className="size-4" /> Edit
+          </Link>
+        )}
         <div className="absolute bottom-4 left-4 right-4">
           <div className="mb-2 flex gap-2">
             <Badge

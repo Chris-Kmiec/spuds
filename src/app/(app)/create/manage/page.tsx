@@ -1,12 +1,13 @@
 import { CancelEventButton } from "./cancel-button";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getCurrentProfile } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { Attendee, EventRow, Profile } from "@/lib/types";
 import { formatEventDate, formatEventTime } from "@/lib/utils";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Pencil, Star } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = { title: "Host dashboard" };
@@ -204,7 +205,12 @@ function Section({
             )}
 
             {showManage && e.status === "published" && (
-              <div className="flex justify-end border-t border-soil-800/5 pt-3">
+              <div className="flex items-center justify-end gap-1 border-t border-soil-800/5 pt-3">
+                <Link href={`/events/${e.id}/edit`}>
+                  <Button variant="ghost" size="sm">
+                    <Pencil className="size-4" /> Edit
+                  </Button>
+                </Link>
                 <CancelEventButton eventId={e.id} />
               </div>
             )}
