@@ -2,9 +2,25 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export type AuthState = { error?: string; message?: string };
+
+/** Kick off Discord OAuth; Supabase sends the user back to /auth/callback. */
+export async function signInWithDiscord(): Promise<AuthState | void> {
+  const supabase = await createClient();
+  const origin =
+    (await headers()).get("origin") ?? "https://getspuds.com";
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "discord",
+    options: { redirectTo: `${origin}/auth/callback` },
+  });
+
+  if (error) return { error: error.message };
+  if (data?.url) redirect(data.url);
+}
 
 export async function login(
   _prev: AuthState,

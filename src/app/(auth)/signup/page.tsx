@@ -1,6 +1,7 @@
 "use client";
 
 import { signup, type AuthState } from "../actions";
+import { DiscordButton } from "../discord-button";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,7 +28,17 @@ export default function SignupPage() {
           Find your people. IRL. One game at a time.
         </p>
 
-        <form action={action} className="mt-6 space-y-4">
+        <div className="mt-6">
+          <DiscordButton label="Sign up with Discord" />
+        </div>
+
+        <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-wide text-soil-800/40">
+          <span className="h-px flex-1 bg-soil-800/10" />
+          or
+          <span className="h-px flex-1 bg-soil-800/10" />
+        </div>
+
+        <form action={action} className="space-y-4">
           <Input
             name="username"
             placeholder="Username (e.g. couch_carl)"
