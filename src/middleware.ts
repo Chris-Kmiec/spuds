@@ -1,7 +1,14 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/", "/login", "/signup", "/auth"];
+const PUBLIC_PATHS = [
+  "/",
+  "/login",
+  "/signup",
+  "/auth",
+  "/unsubscribe", // reached from an email link, so no session exists
+  "/api", // machine-to-machine routes authenticate with their own secrets
+];
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.some(
