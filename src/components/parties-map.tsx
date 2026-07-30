@@ -148,7 +148,7 @@ export function PartiesMap({
     <div className="relative">
       <div
         ref={containerRef}
-        className="h-[68vh] w-full overflow-hidden rounded-card border border-soil-800/5 shadow-sm shadow-soil-800/5"
+        className="h-[62dvh] min-h-80 w-full overflow-hidden rounded-card border border-soil-800/5 shadow-sm shadow-soil-800/5"
       />
 
       {/* Detail sheet — always rises from the same spot */}

@@ -58,7 +58,7 @@ export default async function ConversationPage({
           .join(", ") || "Direct message";
 
   return (
-    <div className="-mb-20 flex flex-col">
+    <div className="chat-shell flex flex-col">
       <header className="sticky top-0 z-20 -mx-4 flex items-center gap-3 border-b border-soil-800/5 bg-cream-50/95 px-4 py-3 backdrop-blur">
         <Link
           href="/messages"

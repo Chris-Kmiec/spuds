@@ -83,7 +83,7 @@ export function ChatRoom({
   }
 
   return (
-    <div className="flex h-[calc(100dvh-8.5rem)] flex-col">
+    <div className="chat-scroll flex flex-col">
       <div className="flex-1 space-y-3 overflow-y-auto py-4">
         {messages.length === 0 && (
           <p className="pt-12 text-center text-sm text-soil-800/50">

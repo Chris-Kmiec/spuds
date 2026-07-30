@@ -32,7 +32,7 @@ export function RsvpPanel({
 
   if (isHost) {
     return (
-      <div className="fixed inset-x-0 bottom-16 z-30 border-t border-soil-800/5 bg-white/95 p-4 backdrop-blur">
+      <div className="above-nav fixed inset-x-0 z-30 border-t border-soil-800/5 bg-white/95 p-4 backdrop-blur">
         <div className="mx-auto max-w-xl">
           <Button
             className="w-full"
@@ -67,7 +67,7 @@ export function RsvpPanel({
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-16 z-30 border-t border-soil-800/5 bg-white/95 p-4 backdrop-blur">
+    <div className="above-nav fixed inset-x-0 z-30 border-t border-soil-800/5 bg-white/95 p-4 backdrop-blur">
       <div className="mx-auto max-w-xl space-y-3">
         {myStatus === "going" || myStatus === "waitlist" ? (
           <div className="flex items-center gap-3">

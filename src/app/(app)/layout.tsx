@@ -14,7 +14,7 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-dvh bg-cream-50">
-      <main className="mx-auto max-w-xl px-4 pb-24 pt-4">{children}</main>
+      <main className="pb-nav mx-auto max-w-xl px-4 pt-4">{children}</main>
       <BottomNav />
     </div>
   );
