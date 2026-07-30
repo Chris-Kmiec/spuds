@@ -19,10 +19,12 @@ create table if not exists private.email_config (
 revoke all on schema private from anon, authenticated;
 revoke all on private.email_config from anon, authenticated;
 
+-- pg_net exposes its functions in the `net` schema regardless of where the
+-- extension itself is installed, so it must be on the search_path.
 create or replace function public.dispatch_notification_email()
 returns trigger
 language plpgsql
-security definer set search_path = public, extensions
+security definer set search_path = public, net, extensions
 as $$
 declare
   cfg record;
@@ -58,7 +60,7 @@ begin
   select coalesce(display_name, username) into actor_name
     from public.profiles where id = new.actor_id;
 
-  perform extensions.net.http_post(
+  perform net.http_post(
     url     := cfg.endpoint,
     headers := jsonb_build_object(
                  'Content-Type', 'application/json',
