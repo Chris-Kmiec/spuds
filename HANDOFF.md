@@ -54,6 +54,18 @@ can pick up cold. Last updated: 2026-07-30.
   (pg_net's functions live in the `net` schema, *not* `extensions.net`.)
 - **Reminders** run on a daily Vercel cron and are idempotent per attendee.
 
+## Tests
+
+```bash
+npm test          # vitest unit tests (timezone math, pricing, badges, distance)
+npm run test:e2e  # playwright, read-only, runs against production by default
+```
+
+E2E is deliberately **read-only** so it's safe against production. Override the
+target with `E2E_BASE_URL` (e.g. a preview deploy or `http://localhost:3000`).
+GitHub Actions runs lint + unit + build on every push/PR, and the e2e suite
+against production after a push to `main`.
+
 ## Open items / next steps
 
 **Needs the user (dashboard access):**
@@ -61,15 +73,13 @@ can pick up cold. Last updated: 2026-07-30.
       cron needs it; everything else already works.
 - [ ] Connect the GitHub repo in Vercel → Settings → Git for auto-deploys.
 
-**Known issue, not yet fixed:**
-- [ ] **Party times render in the viewer's timezone**, not the venue's. Fine
-      while everyone is in Chicago; wrong the moment you expand. Proper fix:
-      store a timezone per party (derived from location) and always display
-      the venue's local time, like Eventbrite.
+**Known gap worth closing:**
+- [ ] **Host-created parties have no lat/lng**, so they never appear on the map
+      (only seeded parties do). The create wizard collects an address but never
+      geocodes it. Fix: geocode on save via the Mapbox token we already have.
 
 **Candidate next features (no keys needed):**
 - [ ] Host analytics — views, RSVP conversion, attendance rate, repeat guests
-- [ ] E2E test suite (Playwright) + GitHub Actions CI
 - [ ] Attendance check-in (feeds attendance rate + trust signals)
 
 **Candidate next features (need a key/account):**
