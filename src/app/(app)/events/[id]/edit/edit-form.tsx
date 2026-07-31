@@ -7,6 +7,12 @@ import { ImageUpload } from "@/components/ui/image-upload";
 import { Input, Textarea } from "@/components/ui/input";
 import { eventContentCopy, PLATFORMS } from "@/lib/constants";
 import type { EventRow } from "@/lib/types";
+import {
+  DEFAULT_TZ,
+  timeZoneLabel,
+  utcToZonedFields,
+  zonedToUtcIso,
+} from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
@@ -17,18 +23,12 @@ function toggle(list: string[], value: string) {
     : [...list, value];
 }
 
-function toLocalDate(iso: string) {
-  return iso ? iso.slice(0, 10) : "";
-}
-function toLocalTime(iso: string | null) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  return `${String(d.getHours()).padStart(2, "0")}:${String(
-    d.getMinutes()
-  ).padStart(2, "0")}`;
-}
-
 export function EditEventForm({ event }: { event: EventRow }) {
+  // Always edit in the party's own timezone, so a host in another zone
+  // can't accidentally shift the start time just by opening this form.
+  const tz = event.timezone || DEFAULT_TZ;
+  const startFields = utcToZonedFields(event.start_time, tz);
+  const endFields = utcToZonedFields(event.end_time, tz);
   const copy = eventContentCopy(event.event_type);
   const watching = event.event_type === "watch_party";
   const boardGame = event.event_type === "board_game";
@@ -42,9 +42,9 @@ export function EditEventForm({ event }: { event: EventRow }) {
   const [games, setGames] = useState<string[]>(event.games);
   const [customGame, setCustomGame] = useState("");
   const [platforms, setPlatforms] = useState<string[]>(event.platforms);
-  const [date, setDate] = useState(toLocalDate(event.start_time));
-  const [startTime, setStartTime] = useState(toLocalTime(event.start_time));
-  const [endTime, setEndTime] = useState(toLocalTime(event.end_time));
+  const [date, setDate] = useState(startFields.date);
+  const [startTime, setStartTime] = useState(startFields.time);
+  const [endTime, setEndTime] = useState(endFields.time);
   const [locationName, setLocationName] = useState(event.location_name ?? "");
   const [address, setAddress] = useState(event.address ?? "");
   const [capacity, setCapacity] = useState(event.capacity);
@@ -63,10 +63,8 @@ export function EditEventForm({ event }: { event: EventRow }) {
 
   function save() {
     setError(null);
-    const startIso =
-      date && startTime ? new Date(`${date}T${startTime}`).toISOString() : "";
-    const endIso =
-      date && endTime ? new Date(`${date}T${endTime}`).toISOString() : null;
+    const startIso = date && startTime ? zonedToUtcIso(date, startTime, tz) : "";
+    const endIso = date && endTime ? zonedToUtcIso(date, endTime, tz) : null;
 
     startTransition(async () => {
       const result = await editEvent(event.id, {
@@ -195,7 +193,12 @@ export function EditEventForm({ event }: { event: EventRow }) {
           />
         </label>
         <label className="space-y-1">
-          <span className="text-sm font-semibold">Start</span>
+          <span className="text-sm font-semibold">
+            Start{" "}
+            <span className="font-normal text-soil-800/50">
+              ({timeZoneLabel(event.start_time, tz)})
+            </span>
+          </span>
           <Input
             type="time"
             value={startTime}

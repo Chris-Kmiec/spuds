@@ -33,6 +33,7 @@ export type EventRow = {
   platforms: string[];
   start_time: string;
   end_time: string | null;
+  timezone: string;
   location_name: string | null;
   address: string | null;
   latitude: number | null;

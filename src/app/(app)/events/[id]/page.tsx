@@ -12,6 +12,7 @@ import {
   formatEventDate,
   formatEventTime,
   formatPrice,
+  timeZoneLabel,
 } from "@/lib/utils";
 import {
   ArrowLeft,
@@ -179,11 +180,15 @@ export default async function EventDetailPage({
             </div>
             <div>
               <p className="font-semibold">
-                {formatEventDate(event.start_time)}
+                {formatEventDate(event.start_time, event.timezone)}
               </p>
               <p className="text-sm text-soil-800/60">
-                {formatEventTime(event.start_time)}
-                {event.end_time && ` – ${formatEventTime(event.end_time)}`}
+                {formatEventTime(event.start_time, event.timezone)}
+                {event.end_time &&
+                  ` – ${formatEventTime(event.end_time, event.timezone)}`}{" "}
+                <span className="text-soil-800/50">
+                  {timeZoneLabel(event.start_time, event.timezone)}
+                </span>
               </p>
             </div>
           </div>

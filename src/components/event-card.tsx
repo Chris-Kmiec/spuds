@@ -83,8 +83,8 @@ export function EventCard({
           <div className="space-y-1 text-sm text-soil-800/70">
             <div className="flex items-center gap-1.5">
               <CalendarDays className="size-4 shrink-0 text-soil-800/40" />
-              {formatEventDate(event.start_time)} ·{" "}
-              {formatEventTime(event.start_time)}
+              {formatEventDate(event.start_time, event.timezone)} ·{" "}
+              {formatEventTime(event.start_time, event.timezone)}
             </div>
             <div className="flex items-center gap-1.5">
               <MapPin className="size-4 shrink-0 text-soil-800/40" />

@@ -149,8 +149,8 @@ function Section({
                   {e.title}
                 </Link>
                 <p className="text-sm text-soil-800/60">
-                  {formatEventDate(e.start_time)} ·{" "}
-                  {formatEventTime(e.start_time)}
+                  {formatEventDate(e.start_time, e.timezone)} ·{" "}
+                  {formatEventTime(e.start_time, e.timezone)}
                 </p>
               </div>
               <Badge tone={e.status === "published" ? "positive" : "neutral"}>

@@ -217,6 +217,7 @@ export default async function DiscoverPage({
               latitude: c.latitude,
               longitude: c.longitude,
               start_time: c.start_time,
+              timezone: c.timezone,
               location_name: c.location_name,
               image_url: c.image_url,
               type_label: EVENT_TYPE_LABELS[c.event_type] ?? "Party",

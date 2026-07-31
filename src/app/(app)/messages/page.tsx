@@ -13,7 +13,10 @@ type ConvRow = {
   conversation: {
     id: string;
     type: "event" | "dm";
-    event: Pick<EventRow, "id" | "title" | "image_url" | "start_time"> | null;
+    event: Pick<
+      EventRow,
+      "id" | "title" | "image_url" | "start_time" | "timezone"
+    > | null;
   };
 };
 
@@ -24,7 +27,7 @@ export default async function MessagesPage() {
   const { data: rows } = await supabase
     .from("conversation_participants")
     .select(
-      "conversation:conversations(id, type, event:events(id, title, image_url, start_time))"
+      "conversation:conversations(id, type, event:events(id, title, image_url, start_time, timezone))"
     )
     .eq("user_id", userId!);
 
@@ -134,7 +137,7 @@ export default async function MessagesPage() {
                     </p>
                     {c.type === "event" && c.event && (
                       <span className="shrink-0 text-xs text-soil-800/50">
-                        {formatEventDate(c.event.start_time)}
+                        {formatEventDate(c.event.start_time, c.event.timezone)}
                       </span>
                     )}
                   </div>

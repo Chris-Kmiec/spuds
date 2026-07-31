@@ -14,7 +14,14 @@ import {
   PLATFORMS,
 } from "@/lib/constants";
 import type { Community } from "@/lib/types";
-import { cn, formatEventDate, formatEventTime, formatPrice } from "@/lib/utils";
+import {
+  cn,
+  DEFAULT_TZ,
+  formatEventDate,
+  formatEventTime,
+  formatPrice,
+  zonedToUtcIso,
+} from "@/lib/utils";
 import Image from "next/image";
 import { useState, useTransition } from "react";
 
@@ -71,10 +78,16 @@ export function EventWizard({ communities }: { communities: Community[] }) {
     "Give it a final look, then publish.",
   ];
 
+  // The host is almost always in the city they're hosting in, so their zone
+  // is the party's zone. Times entered are wall-clock time *there*.
+  const timezone =
+    typeof Intl !== "undefined"
+      ? (Intl.DateTimeFormat().resolvedOptions().timeZone ?? DEFAULT_TZ)
+      : DEFAULT_TZ;
+
   const startIso =
-    date && startTime ? new Date(`${date}T${startTime}`).toISOString() : "";
-  const endIso =
-    date && endTime ? new Date(`${date}T${endTime}`).toISOString() : null;
+    date && startTime ? zonedToUtcIso(date, startTime, timezone) : "";
+  const endIso = date && endTime ? zonedToUtcIso(date, endTime, timezone) : null;
 
   const canContinue = [
     title.trim().length >= 3,
@@ -96,6 +109,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
         platforms,
         start_time: startIso,
         end_time: endIso,
+        timezone,
         location_name: locationName,
         address,
         capacity,
@@ -407,7 +421,7 @@ export function EventWizard({ communities }: { communities: Community[] }) {
             </div>
             <p className="text-sm text-soil-800/70">
               {startIso &&
-                `${formatEventDate(startIso)} · ${formatEventTime(startIso)}`}{" "}
+                `${formatEventDate(startIso, timezone)} · ${formatEventTime(startIso, timezone)}`}{" "}
               · {locationName} · {formatPrice(price)} · {capacity} spots
             </p>
             {description && (

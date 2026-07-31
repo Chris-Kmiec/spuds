@@ -19,7 +19,7 @@ export default async function ConversationPage({
   // RLS already restricts to participants; a null here means no access or bad id.
   const { data: conversation } = await supabase
     .from("conversations")
-    .select("id, type, event:events(id, title, image_url, start_time)")
+    .select("id, type, event:events(id, title, image_url, start_time, timezone)")
     .eq("id", id)
     .maybeSingle();
 
@@ -46,7 +46,7 @@ export default async function ConversationPage({
 
   const event = conversation.event as unknown as Pick<
     EventRow,
-    "id" | "title" | "image_url" | "start_time"
+    "id" | "title" | "image_url" | "start_time" | "timezone"
   > | null;
 
   const title =
@@ -74,8 +74,8 @@ export default async function ConversationPage({
               href={`/events/${event.id}`}
               className="text-xs font-semibold text-spud-500"
             >
-              {formatEventDate(event.start_time)} ·{" "}
-              {formatEventTime(event.start_time)} · View party →
+              {formatEventDate(event.start_time, event.timezone)} ·{" "}
+              {formatEventTime(event.start_time, event.timezone)} · View party →
             </Link>
           )}
         </div>

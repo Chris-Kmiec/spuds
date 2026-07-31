@@ -13,6 +13,7 @@ export type NewEventInput = {
   platforms: string[];
   start_time: string; // ISO
   end_time: string | null;
+  timezone: string; // IANA zone the party physically happens in
   location_name: string;
   address: string;
   capacity: number;
@@ -48,6 +49,7 @@ export async function createEvent(input: NewEventInput) {
       platforms: input.platforms,
       start_time: input.start_time,
       end_time: input.end_time,
+      timezone: input.timezone || "America/Chicago",
       location_name: input.location_name.trim() || null,
       address: input.address.trim() || null,
       capacity: Math.max(2, Math.min(200, input.capacity)),

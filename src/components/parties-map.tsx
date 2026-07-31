@@ -17,6 +17,7 @@ export type MapParty = {
   latitude: number | null;
   longitude: number | null;
   start_time: string;
+  timezone: string;
   location_name: string | null;
   image_url: string | null;
   type_label: string;
@@ -186,8 +187,8 @@ export function PartiesMap({
                 <div className="mt-1 space-y-0.5 text-xs text-soil-800/70">
                   <div className="flex items-center gap-1.5">
                     <CalendarDays className="size-3.5 shrink-0 text-soil-800/40" />
-                    {formatEventDate(selected.start_time)} ·{" "}
-                    {formatEventTime(selected.start_time)}
+                    {formatEventDate(selected.start_time, selected.timezone)} ·{" "}
+                    {formatEventTime(selected.start_time, selected.timezone)}
                   </div>
                   {selected.location_name && (
                     <div className="flex items-center gap-1.5">

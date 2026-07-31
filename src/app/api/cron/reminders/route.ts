@@ -40,7 +40,7 @@ export async function GET(request: Request) {
   const { data: parties, error } = await supabase
     .from("events")
     .select(
-      "id, title, start_time, location_name, attendees:event_attendees(user_id, status)"
+      "id, title, start_time, timezone, location_name, attendees:event_attendees(user_id, status)"
     )
     .eq("status", "published")
     .gte("start_time", now.toISOString())
@@ -74,7 +74,7 @@ export async function GET(request: Request) {
 
     const done = new Set((alreadySent ?? []).map((r) => r.user_id));
     const when = new Date(party.start_time).toLocaleString("en-US", {
-      timeZone: "America/Chicago",
+      timeZone: party.timezone || "America/Chicago",
       weekday: "short",
       month: "short",
       day: "numeric",
