@@ -73,10 +73,16 @@ against production after a push to `main`.
       cron needs it; everything else already works.
 - [ ] Connect the GitHub repo in Vercel → Settings → Git for auto-deploys.
 
-**Known gap worth closing:**
-- [ ] **Host-created parties have no lat/lng**, so they never appear on the map
-      (only seeded parties do). The create wizard collects an address but never
-      geocodes it. Fix: geocode on save via the Mapbox token we already have.
+**Operational gotchas learned the hard way:**
+- **Supabase free tier pauses after ~1 week idle**, which takes the whole app
+  down (DNS for the project stops resolving). Restoring from the dashboard
+  brings data back intact. Pro (~$25/mo) is the real fix before launch.
+- **The Mapbox token is Referer-restricted to getspuds.com**, so it only works
+  from the browser. Server-side geocoding returns 403 — that's why geocoding
+  happens client-side and coordinates are passed into the server action.
+- **Demo parties self-refresh nightly** via a `pg_cron` job
+  (`refresh-demo-parties`, 08:00 UTC) so the feed never ages into the past.
+  It only touches the fixed seed UUIDs, never real parties.
 
 **Candidate next features (no keys needed):**
 - [ ] Host analytics — views, RSVP conversion, attendance rate, repeat guests
