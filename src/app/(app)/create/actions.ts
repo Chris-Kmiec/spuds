@@ -16,6 +16,10 @@ export type NewEventInput = {
   timezone: string; // IANA zone the party physically happens in
   location_name: string;
   address: string;
+  // Geocoded in the browser — the Mapbox token is Referer-restricted and
+  // can't be used server-side. See lib/geocode.ts.
+  latitude: number | null;
+  longitude: number | null;
   capacity: number;
   price: number;
   skill_level: string;
@@ -41,6 +45,8 @@ export async function createEvent(input: NewEventInput) {
     .from("events")
     .insert({
       host_id: user.id,
+      latitude: input.latitude,
+      longitude: input.longitude,
       title: input.title.trim(),
       description: input.description.trim() || null,
       image_url: input.image_url || null,
@@ -79,6 +85,8 @@ export type EditEventInput = {
   end_time: string | null;
   location_name: string;
   address: string;
+  latitude: number | null;
+  longitude: number | null;
   capacity: number;
   price: number;
   equipment: string;
@@ -105,9 +113,17 @@ export async function editEvent(eventId: string, input: EditEventInput) {
     .eq("status", "going");
   const capacity = Math.max(going ?? 2, Math.min(200, input.capacity));
 
+  // Only move the pin when the browser resolved a new one; a failed lookup
+  // must not drop an existing party off the map.
+  const movedPin =
+    input.latitude != null && input.longitude != null
+      ? { latitude: input.latitude, longitude: input.longitude }
+      : {};
+
   const { error } = await supabase
     .from("events")
     .update({
+      ...movedPin,
       title: input.title.trim(),
       description: input.description.trim() || null,
       image_url: input.image_url || null,

@@ -3,6 +3,7 @@
 import { editEvent } from "@/app/(app)/create/actions";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
+import { AddressPreview } from "@/components/ui/address-preview";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Input, Textarea } from "@/components/ui/input";
 import { eventContentCopy, PLATFORMS } from "@/lib/constants";
@@ -47,6 +48,10 @@ export function EditEventForm({ event }: { event: EventRow }) {
   const [endTime, setEndTime] = useState(endFields.time);
   const [locationName, setLocationName] = useState(event.location_name ?? "");
   const [address, setAddress] = useState(event.address ?? "");
+  const [coords, setCoords] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
   const [capacity, setCapacity] = useState(event.capacity);
   const [price, setPrice] = useState(Number(event.price));
   const [equipment, setEquipment] = useState(event.equipment ?? "");
@@ -77,6 +82,8 @@ export function EditEventForm({ event }: { event: EventRow }) {
         end_time: endIso,
         location_name: locationName,
         address,
+        latitude: coords?.latitude ?? null,
+        longitude: coords?.longitude ?? null,
         capacity,
         price,
         equipment,
@@ -225,6 +232,11 @@ export function EditEventForm({ event }: { event: EventRow }) {
       <label className="block space-y-1">
         <span className="text-sm font-semibold">Address</span>
         <Input value={address} onChange={(e) => setAddress(e.target.value)} />
+        <AddressPreview
+          address={address}
+          venue={locationName}
+          onResolved={setCoords}
+        />
       </label>
 
       <div className="grid grid-cols-2 gap-3">

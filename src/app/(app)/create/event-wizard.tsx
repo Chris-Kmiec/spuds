@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
+import { AddressPreview } from "@/components/ui/address-preview";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Input, Textarea } from "@/components/ui/input";
 import {
@@ -52,6 +53,10 @@ export function EventWizard({ communities }: { communities: Community[] }) {
   const [endTime, setEndTime] = useState("");
   const [locationName, setLocationName] = useState("");
   const [address, setAddress] = useState("");
+  const [coords, setCoords] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
   const [capacity, setCapacity] = useState(8);
   const [price, setPrice] = useState(0);
   const [communityId, setCommunityId] = useState<string | null>(null);
@@ -112,6 +117,8 @@ export function EventWizard({ communities }: { communities: Community[] }) {
         timezone,
         location_name: locationName,
         address,
+        latitude: coords?.latitude ?? null,
+        longitude: coords?.longitude ?? null,
         capacity,
         price,
         skill_level: "all",
@@ -316,11 +323,18 @@ export function EventWizard({ communities }: { communities: Community[] }) {
             onChange={(e) => setLocationName(e.target.value)}
             placeholder="Venue name — e.g. “Logan Arcade” or “My place”"
           />
-          <Input
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Address (you can share exact address after RSVP)"
-          />
+          <div className="space-y-1.5">
+            <Input
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Address (you can share exact address after RSVP)"
+            />
+            <AddressPreview
+              address={address}
+              venue={locationName}
+              onResolved={setCoords}
+            />
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <label className="space-y-1">
               <span className="text-sm font-semibold">Capacity</span>
