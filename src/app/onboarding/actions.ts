@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -13,7 +14,7 @@ export async function saveOnboarding(input: {
   location: string;
   latitude: number | null;
   longitude: number | null;
-}) {
+}, next?: string) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -45,5 +46,5 @@ export async function saveOnboarding(input: {
   if (pError) return { error: pError.message };
 
   revalidatePath("/", "layout");
-  redirect("/discover");
+  redirect(safeNext(next));
 }

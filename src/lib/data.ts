@@ -1,10 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Profile } from "@/lib/types";
+import { cache } from "react";
 
 import type { ProfileViewData } from "@/components/profile-view";
 
-/** Current auth user + their profile, or nulls when signed out. */
-export async function getCurrentProfile(): Promise<{
+/**
+ * Current auth user + their profile, or nulls when signed out. Cached per
+ * request, since a layout and its page usually both need it.
+ */
+export const getCurrentProfile = cache(async function getCurrentProfile(): Promise<{
   userId: string | null;
   profile: Profile | null;
 }> {
@@ -22,7 +26,7 @@ export async function getCurrentProfile(): Promise<{
     .single();
 
   return { userId: user.id, profile: (profile as Profile) ?? null };
-}
+});
 
 /** Everything a profile page needs, by username. */
 export async function getProfileViewData(

@@ -7,6 +7,7 @@ import { expect, test, type Page } from "@playwright/test";
  */
 
 const DEMO = { email: "petey@demo.getspuds.com", password: "spudspass123" };
+const SMASH = "e0000000-0000-0000-0000-000000000001";
 
 async function login(page: Page) {
   await page.goto("/login");
@@ -31,6 +32,55 @@ test.describe("signed out", () => {
 
   test("private pages redirect to login", async ({ page }) => {
     await page.goto("/create");
+    await expect(page).toHaveURL(/\/login/);
+  });
+
+  test("a shared party link works without an account", async ({ page }) => {
+    // This is how Spuds spreads: a link pasted into Discord or a group chat.
+    await page.goto(`/events/${SMASH}`);
+    await expect(page).not.toHaveURL(/\/login/);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(
+      "Smash Ultimate Weekly"
+    );
+    const main = page.locator("main");
+    await expect(main).toContainText("Hosted by");
+    await expect(main).toContainText("New to Spuds?");
+
+    // The public sees the area, never the street.
+    await expect(main).toContainText("Chicago, IL");
+    await expect(main).toContainText("Exact address after you sign in");
+    await expect(main).not.toContainText("Fullerton");
+
+    // Joining goes through sign-up and lands back here, RSVP sheet open.
+    const join = page.getByRole("link", { name: /Join this party|Join the waitlist/ });
+    await expect(join).toHaveAttribute(
+      "href",
+      `/signup?next=${encodeURIComponent(`/events/${SMASH}?join=1`)}`
+    );
+  });
+
+  test("a party link unfurls into a rich preview", async ({ page }) => {
+    await page.goto(`/events/${SMASH}`);
+    const meta = (key: string) =>
+      page
+        .locator(`meta[property="${key}"], meta[name="${key}"]`)
+        .first()
+        .getAttribute("content");
+
+    expect(await meta("og:title")).toContain("Smash Ultimate Weekly");
+    expect(await meta("og:description")).toMatch(/Chicago, IL.*Hosted by/);
+    expect(await meta("og:description")).not.toContain("Fullerton");
+    expect(await meta("twitter:card")).toBe("summary_large_image");
+
+    // Crawlers fetch the image signed out, so it must not bounce to /login.
+    const image = await page.request.get((await meta("og:image"))!);
+    expect(image.status()).toBe(200);
+    expect(image.headers()["content-type"]).toBe("image/png");
+    expect((await image.body()).length).toBeGreaterThan(10_000);
+  });
+
+  test("editing a party still needs an account", async ({ page }) => {
+    await page.goto(`/events/${SMASH}/edit`);
     await expect(page).toHaveURL(/\/login/);
   });
 
@@ -75,6 +125,10 @@ test.describe("core loop", () => {
     await expect(page.locator("main")).toContainText("Hosted by");
     await expect(page.locator("main")).toContainText("Who's going");
     await expect(page.locator("main")).toContainText(/reviews?/);
+    // Signed in: the exact address, a way to share, and no sign-up pitch.
+    await expect(page.locator("main")).toContainText("2410 W Fullerton Ave");
+    await expect(page.getByRole("button", { name: "Share" })).toBeVisible();
+    await expect(page.locator("main")).not.toContainText("New to Spuds?");
   });
 
   test("map view renders pins", async ({ page }) => {

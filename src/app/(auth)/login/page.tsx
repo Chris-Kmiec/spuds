@@ -11,6 +11,7 @@ import { Suspense, useActionState } from "react";
 
 function LoginForm() {
   const search = useSearchParams();
+  const next = search.get("next");
   const [state, action, pending] = useActionState<AuthState, FormData>(
     login,
     {}
@@ -27,7 +28,7 @@ function LoginForm() {
       </p>
 
       <div className="mt-6">
-        <DiscordButton label="Continue with Discord" />
+        <DiscordButton label="Continue with Discord" next={next} />
       </div>
 
       <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-wide text-soil-800/40">
@@ -37,7 +38,7 @@ function LoginForm() {
       </div>
 
       <form action={action} className="space-y-4">
-        <input type="hidden" name="next" value={search.get("next") ?? ""} />
+        <input type="hidden" name="next" value={next ?? ""} />
         <Input name="email" type="email" placeholder="Email" required />
         <Input
           name="password"
@@ -55,7 +56,10 @@ function LoginForm() {
 
       <p className="mt-6 text-center text-sm text-soil-800/60">
         New to Spuds?{" "}
-        <Link href="/signup" className="font-semibold text-spud-500">
+        <Link
+          href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"}
+          className="font-semibold text-spud-500"
+        >
           Create an account
         </Link>
       </p>

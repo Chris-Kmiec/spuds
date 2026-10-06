@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { badgesFor } from "./constants";
 import {
+  areaFromAddress,
   distanceMiles,
   formatEventDate,
   formatEventTime,
   formatPrice,
   initials,
+  safeNext,
   timeZoneLabel,
   utcToZonedFields,
   zonedToUtcIso,
@@ -124,5 +126,59 @@ describe("initials", () => {
     expect(initials("Pete Alvarez")).toBe("PA");
     expect(initials("Dana")).toBe("D");
     expect(initials("a b c d")).toBe("AB");
+  });
+});
+
+/**
+ * Logged-out visitors and link previews see a party's area, never its
+ * street — some parties are at someone's home.
+ */
+describe("areaFromAddress", () => {
+  it("reduces a street address to city and state", () => {
+    expect(areaFromAddress("2410 W Fullerton Ave, Chicago, IL")).toBe(
+      "Chicago, IL"
+    );
+    expect(
+      areaFromAddress("2410 W Fullerton Ave, Chicago, Illinois 60647, United States")
+    ).toBe("Chicago, Illinois");
+    expect(areaFromAddress("12 Oak St, Apt 3, Austin, TX 78701")).toBe(
+      "Austin, TX"
+    );
+  });
+
+  it("keeps an address that is already just a city", () => {
+    expect(areaFromAddress("Chicago, IL 60647")).toBe("Chicago, IL");
+  });
+
+  it("returns null rather than risk leaking a street", () => {
+    expect(areaFromAddress("2410 W Fullerton Ave")).toBeNull();
+    expect(areaFromAddress("2410 W Fullerton Ave, Chicago")).toBeNull();
+    expect(areaFromAddress("")).toBeNull();
+    expect(areaFromAddress(null)).toBeNull();
+  });
+});
+
+describe("safeNext", () => {
+  it("allows same-site paths", () => {
+    expect(safeNext("/events/abc")).toBe("/events/abc");
+    expect(safeNext("/discover?view=map")).toBe("/discover?view=map");
+  });
+
+  it("blocks open redirects", () => {
+    for (const bad of [
+      "https://evil.com",
+      "//evil.com",
+      "/\\evil.com",
+      "/\t/evil.com",
+      "@evil.com",
+      "javascript:alert(1)",
+    ]) {
+      expect(safeNext(bad), bad).toBe("/discover");
+    }
+  });
+
+  it("falls back when missing", () => {
+    expect(safeNext(null)).toBe("/discover");
+    expect(safeNext("", "/onboarding")).toBe("/onboarding");
   });
 });

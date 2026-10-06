@@ -16,7 +16,14 @@ function DiscordIcon() {
   );
 }
 
-export function DiscordButton({ label }: { label: string }) {
+export function DiscordButton({
+  label,
+  next,
+}: {
+  label: string;
+  /** Same-site path to land on after Discord sends the user back. */
+  next?: string | null;
+}) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +34,7 @@ export function DiscordButton({ label }: { label: string }) {
         disabled={pending}
         onClick={() =>
           startTransition(async () => {
-            const result = await signInWithDiscord();
+            const result = await signInWithDiscord(next ?? undefined);
             if (result?.error) setError(result.error);
           })
         }

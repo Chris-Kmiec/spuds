@@ -68,6 +68,10 @@ h3 {
 .pb-nav {
   padding-bottom: calc(var(--nav-h) + 1.5rem + env(safe-area-inset-bottom));
 }
+/* No nav (logged-out pages): just clear the home indicator. */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
 /* …and additionally clears a fixed action bar above the nav. */
 .pb-nav-action {
   padding-bottom: calc(var(--nav-h) + 6.5rem + env(safe-area-inset-bottom));

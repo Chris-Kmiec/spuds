@@ -10,9 +10,17 @@ const PUBLIC_PATHS = [
   "/api", // machine-to-machine routes authenticate with their own secrets
 ];
 
+// A party page and its link-preview image are how Spuds spreads: links get
+// pasted into Discord and group chats, where neither the crawler nor most
+// friends are signed in. /events/:id/edit stays private.
+const PUBLIC_PARTY = /^\/events\/[^/]+(\/opengraph-image[^/]*)?$/;
+
 function isPublic(pathname: string) {
-  return PUBLIC_PATHS.some(
-    (p) => pathname === p || (p !== "/" && pathname.startsWith(p + "/"))
+  return (
+    PUBLIC_PARTY.test(pathname) ||
+    PUBLIC_PATHS.some(
+      (p) => pathname === p || (p !== "/" && pathname.startsWith(p + "/"))
+    )
   );
 }
 

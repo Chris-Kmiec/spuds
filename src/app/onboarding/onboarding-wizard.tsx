@@ -29,7 +29,13 @@ function toggle(list: string[], value: string) {
     : [...list, value];
 }
 
-export function OnboardingWizard({ username }: { username: string }) {
+export function OnboardingWizard({
+  username,
+  next,
+}: {
+  username: string;
+  next: string;
+}) {
   const [step, setStep] = useState(0);
   const [games, setGames] = useState<string[]>([]);
   const [customGame, setCustomGame] = useState("");
@@ -85,7 +91,7 @@ export function OnboardingWizard({ username }: { username: string }) {
         location: location.trim(),
         latitude: coords?.lat ?? null,
         longitude: coords?.lng ?? null,
-      });
+      }, next);
       if (result?.error) setError(result.error);
     });
   }

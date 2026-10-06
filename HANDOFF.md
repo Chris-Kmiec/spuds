@@ -1,7 +1,7 @@
 # Spuds — handoff / current state
 
 Living document. **Update it when you finish something**, so any future session
-can pick up cold. Last updated: 2026-07-30.
+can pick up cold. Last updated: 2026-10-06.
 
 - **Live:** https://getspuds.com (also www → apex redirect)
 - **Repo:** https://github.com/Chris-Kmiec/spuds (`main`)
@@ -19,6 +19,7 @@ can pick up cold. Last updated: 2026-07-30.
 | Discover | Personalized feed, search, Weekdays/Weekends + party-type filters, distance |
 | Map view | Mapbox, type-specific pins (gamepad / dice / TV), Zillow-style bottom sheet |
 | Parties | Detail page, RSVP with guests + message, capacity-aware waitlist |
+| Sharing | **Party pages are public** (no account needed), rich Discord/iMessage previews (`opengraph-image.tsx`), Share button; sign-up/Discord/onboarding all return to the party with the RSVP sheet open |
 | Waitlist | **Auto-promotion** when a spot frees up, and when a host raises capacity |
 | Hosting | Create wizard, **edit party**, host dashboard w/ attendees + stats, cancel |
 | Photos | Uploads for party covers, avatars, community banners (Supabase Storage) |
@@ -39,7 +40,11 @@ can pick up cold. Last updated: 2026-07-30.
    browsing doesn't lead with cost.
 5. **Design system is enforced** — see `DESIGN.md`. `npm run lint:design`
    fails on emoji in UI chrome.
-6. **Email stays high-signal**: only waitlist promotion, new RSVP to your
+6. **Growth runs on shared party links** (Discord, group chats). A logged-out
+   visitor sees the whole party — host, reviews, who's going — except the
+   street address (city only) and attendee names (faces only). Previews use
+   the same rules.
+7. **Email stays high-signal**: only waitlist promotion, new RSVP to your
    party, new review, and a day-before reminder. Chat messages and follows are
    deliberately in-app only.
 
@@ -73,7 +78,15 @@ against production after a push to `main`.
       cron needs it; everything else already works.
 - [ ] Connect the GitHub repo in Vercel → Settings → Git for auto-deploys.
 
+**Open question (product):** the exact address is still visible to *any*
+signed-in user, not just people who RSVP'd. Fine for venues; worth gating
+for parties at someone's home.
+
 **Operational gotchas learned the hard way:**
+- **Don't use the Claude desktop app's built-in browser pane on this PC** —
+  it coincided with a bluescreen. Verify UI with headless Playwright instead.
+- Route groups: `/events/[id]` lives in `(public)`, `/events/[id]/edit` in
+  `(app)`. Middleware allow-lists only the party page and its preview image.
 - **Supabase free tier pauses after ~1 week idle**, which takes the whole app
   down (DNS for the project stops resolving). Restoring from the dashboard
   brings data back intact. Pro (~$25/mo) is the real fix before launch.

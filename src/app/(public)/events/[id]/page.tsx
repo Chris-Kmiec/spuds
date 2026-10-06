@@ -1,5 +1,8 @@
+import { GuestJoinPanel } from "./guest-join-panel";
+import { describeParty, loadParty } from "./load-party";
 import { RsvpPanel } from "./rsvp-panel";
 import { ReviewForm } from "./review-form";
+import { ShareButton } from "@/components/share-button";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,8 +10,9 @@ import { Card } from "@/components/ui/card";
 import { getCurrentProfile } from "@/lib/data";
 import { eventContentCopy, EVENT_TYPE_LABELS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
-import type { Attendee, EventRow, Profile, Review } from "@/lib/types";
+import type { Profile, Review } from "@/lib/types";
 import {
+  areaFromAddress,
   formatEventDate,
   formatEventTime,
   formatPrice,
@@ -28,34 +32,55 @@ import {
   Ticket,
   Wrench,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+
+type Params = { params: Promise<{ id: string }> };
+
+/** What Discord, iMessage and friends show when a party link is pasted. */
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const event = await loadParty((await params).id);
+  if (!event) return { title: "Party not found" };
+
+  const description = describeParty(event);
+  return {
+    title: event.title,
+    description,
+    openGraph: {
+      title: event.title,
+      description,
+      type: "website",
+      siteName: "Spuds",
+      url: `/events/${event.id}`,
+    },
+    twitter: { card: "summary_large_image", title: event.title, description },
+  };
+}
+
+// Guests see at most this many faces, never names — the page is public.
+const GUEST_AVATAR_LIMIT = 8;
 
 export default async function EventDetailPage({
   params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+  searchParams,
+}: Params & { searchParams: Promise<{ join?: string }> }) {
   const { id } = await params;
+  const { join } = await searchParams;
   const supabase = await createClient();
   const { profile: viewer } = await getCurrentProfile();
 
-  const { data: eventData } = await supabase
-    .from("events")
-    .select(
-      "*, host:profiles!events_host_id_fkey(*), attendees:event_attendees(*, profile:profiles(*))"
-    )
-    .eq("id", id)
-    .maybeSingle();
+  // Signed in from a shared link but never finished setup: do that first,
+  // then come straight back.
+  if (viewer && !viewer.onboarded) {
+    redirect(`/onboarding?next=${encodeURIComponent(`/events/${id}`)}`);
+  }
 
-  if (!eventData) notFound();
+  const event = await loadParty(id);
+  if (!event) notFound();
 
-  const event = eventData as unknown as EventRow & {
-    host: Profile;
-    attendees: (Attendee & { profile: Profile })[];
-  };
-
+  const isGuest = !viewer;
   const going = event.attendees.filter((a) => a.status === "going");
   const spotsLeft = Math.max(0, event.capacity - going.length);
   const myRsvp = viewer
@@ -88,11 +113,13 @@ export default async function EventDetailPage({
         .eq("reviewed_user_id", event.host_id)
         .order("created_at", { ascending: false })
         .limit(3),
-      supabase
-        .from("conversations")
-        .select("id")
-        .eq("event_id", event.id)
-        .maybeSingle(),
+      viewer
+        ? supabase
+            .from("conversations")
+            .select("id")
+            .eq("event_id", event.id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
       viewer
         ? supabase
             .from("follows")
@@ -120,6 +147,13 @@ export default async function EventDetailPage({
   const canChat = isHost || myRsvp === "going";
   const canReview =
     isPast && !isHost && myRsvp === "going" && !myReviewRes.data;
+  const hostName = event.host.display_name ?? event.host.username;
+  const area = areaFromAddress(event.address);
+
+  // Profiles are behind sign-in, so guests get the same avatar, unlinked.
+  const hostAvatar = (
+    <Avatar src={event.host.avatar_url} name={hostName} size="lg" />
+  );
 
   return (
     <div className="-mx-4 -mt-4 pb-28">
@@ -136,20 +170,35 @@ export default async function EventDetailPage({
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent" />
-        <Link
-          href="/discover"
-          className="absolute left-4 top-4 rounded-full bg-white/90 p-2 shadow backdrop-blur"
-        >
-          <ArrowLeft className="size-5" />
-        </Link>
-        {isHost && !isPast && (
+        {isGuest ? (
           <Link
-            href={`/events/${event.id}/edit`}
-            className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-2 text-sm font-semibold shadow backdrop-blur"
+            href="/"
+            className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1.5 font-display text-lg font-black text-spud-400 shadow backdrop-blur"
           >
-            <Pencil className="size-4" /> Edit
+            Spuds
+          </Link>
+        ) : (
+          <Link
+            href="/discover"
+            className="absolute left-4 top-4 rounded-full bg-white/90 p-2 shadow backdrop-blur"
+            aria-label="Back to discover"
+          >
+            <ArrowLeft className="size-5" />
           </Link>
         )}
+        <div className="absolute right-4 top-4 flex gap-2">
+          {isHost && !isPast && (
+            <Link
+              href={`/events/${event.id}/edit`}
+              className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-2 text-sm font-semibold shadow backdrop-blur"
+            >
+              <Pencil className="size-4" /> Edit
+            </Link>
+          )}
+          {!isPast && (
+            <ShareButton path={`/events/${event.id}`} title={event.title} />
+          )}
+        </div>
         <div className="absolute bottom-4 left-4 right-4">
           <div className="mb-2 flex gap-2">
             <Badge
@@ -198,10 +247,21 @@ export default async function EventDetailPage({
             </div>
             <div>
               <p className="font-semibold">
-                {event.location_name ?? "Location TBA"}
+                {event.location_name ?? area ?? "Location TBA"}
               </p>
-              {event.address && (
-                <p className="text-sm text-soil-800/60">{event.address}</p>
+              {isGuest ? (
+                <>
+                  {area && event.location_name && (
+                    <p className="text-sm text-soil-800/60">{area}</p>
+                  )}
+                  <p className="text-xs text-soil-800/50">
+                    Exact address after you sign in
+                  </p>
+                </>
+              ) : (
+                event.address && (
+                  <p className="text-sm text-soil-800/60">{event.address}</p>
+                )
               )}
             </div>
           </div>
@@ -277,23 +337,25 @@ export default async function EventDetailPage({
         {/* host / trust */}
         <Card className="p-5">
           <div className="flex items-center gap-3">
-            <Link href={`/profile/${event.host.username}`}>
-              <Avatar
-                src={event.host.avatar_url}
-                name={event.host.display_name ?? event.host.username}
-                size="lg"
-              />
-            </Link>
+            {isGuest ? (
+              hostAvatar
+            ) : (
+              <Link href={`/profile/${event.host.username}`}>{hostAvatar}</Link>
+            )}
             <div className="flex-1">
               <p className="text-xs font-semibold uppercase tracking-wide text-soil-800/50">
                 Hosted by
               </p>
-              <Link
-                href={`/profile/${event.host.username}`}
-                className="font-display font-extrabold"
-              >
-                {event.host.display_name ?? event.host.username}
-              </Link>
+              {isGuest ? (
+                <p className="font-display font-extrabold">{hostName}</p>
+              ) : (
+                <Link
+                  href={`/profile/${event.host.username}`}
+                  className="font-display font-extrabold"
+                >
+                  {hostName}
+                </Link>
+              )}
               <div className="flex items-center gap-2 text-sm text-soil-800/60">
                 {reviewCount > 0 ? (
                   <span className="flex items-center gap-1">
@@ -359,6 +421,23 @@ export default async function EventDetailPage({
             <p className="text-sm text-soil-800/60">
               Be the first to join — someone has to start the party.
             </p>
+          ) : isGuest ? (
+            <div className="flex items-center">
+              <div className="flex -space-x-2">
+                {going.slice(0, GUEST_AVATAR_LIMIT).map((a) => (
+                  <Avatar
+                    key={a.id}
+                    src={a.profile.avatar_url}
+                    name={a.profile.display_name ?? a.profile.username}
+                  />
+                ))}
+              </div>
+              {going.length > GUEST_AVATAR_LIMIT && (
+                <span className="ml-3 text-sm font-semibold text-soil-800/60">
+                  +{going.length - GUEST_AVATAR_LIMIT} more
+                </span>
+              )}
+            </div>
           ) : (
             <div className="flex flex-wrap gap-3">
               {going.map((a) => (
@@ -380,6 +459,49 @@ export default async function EventDetailPage({
           )}
         </Card>
 
+        {/* the pitch, for people who arrived from a shared link */}
+        {isGuest && (
+          <Card className="space-y-4 p-5">
+            <div>
+              <h2 className="font-display text-lg font-extrabold">
+                New to Spuds?
+              </h2>
+              <p className="mt-1 text-sm text-soil-800/70">
+                Spuds is how gamers make real-life friends: local parties for
+                video games, tabletop, and watch nights, hosted by players
+                you can check out first.
+              </p>
+            </div>
+            {[
+              {
+                icon: MapPin,
+                title: "Parties near you",
+                body: "Game nights, tabletop sessions, and watch parties in your city, every week.",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Hosts you can trust",
+                body: "Every host has a profile and reviews from people who showed up.",
+              },
+              {
+                icon: MessageCircle,
+                title: "Meet the group before you go",
+                body: "RSVP and you're in the party chat, so you know someone when you walk in.",
+              },
+            ].map(({ icon: Icon, title, body }) => (
+              <div key={title} className="flex gap-3">
+                <div className="h-fit rounded-xl bg-soil-800/5 p-2.5">
+                  <Icon className="size-5 text-soil-800/60" />
+                </div>
+                <div>
+                  <p className="font-semibold">{title}</p>
+                  <p className="text-sm text-soil-800/60">{body}</p>
+                </div>
+              </div>
+            ))}
+          </Card>
+        )}
+
         {/* event chat */}
         {canChat && conversation && (
           <Link href={`/messages/${conversation.id}`} className="block">
@@ -394,19 +516,30 @@ export default async function EventDetailPage({
           <ReviewForm
             eventId={event.id}
             hostId={event.host_id}
-            hostName={event.host.display_name ?? event.host.username}
+            hostName={hostName}
           />
         )}
       </div>
 
-      <RsvpPanel
-        eventId={event.id}
-        myStatus={myRsvp}
-        spotsLeft={spotsLeft}
-        waitlistPosition={waitlistPosition}
-        isHost={isHost}
-        isPast={isPast}
-      />
+      {isGuest ? (
+        <GuestJoinPanel
+          eventId={event.id}
+          spotsLeft={spotsLeft}
+          isPast={isPast}
+        />
+      ) : (
+        <RsvpPanel
+          eventId={event.id}
+          myStatus={myRsvp}
+          spotsLeft={spotsLeft}
+          waitlistPosition={waitlistPosition}
+          isHost={isHost}
+          isPast={isPast}
+          autoOpen={
+            join === "1" && myRsvp !== "going" && myRsvp !== "waitlist"
+          }
+        />
+      )}
     </div>
   );
 }

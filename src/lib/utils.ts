@@ -126,6 +126,57 @@ export function distanceMiles(
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+/**
+ * "City, ST" from a street address, for people who can see a party but not
+ * its exact location (logged-out visitors, link previews). Returns null
+ * rather than guess, so a street can never leak through.
+ */
+export function areaFromAddress(address: string | null | undefined) {
+  if (!address) return null;
+  const parts = address
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
+  if (parts.length && /^(united states|usa|us)$/i.test(parts.at(-1)!)) {
+    parts.pop();
+  }
+  const stripZip = (s: string) => s.replace(/\s*\d{5}(-\d{4})?$/, "").trim();
+
+  if (parts.length >= 3) {
+    const state = stripZip(parts.at(-1)!);
+    return state ? `${parts.at(-2)}, ${state}` : null;
+  }
+  // Already just "City, ST" — safe only if nothing looks like a street number.
+  if (parts.length === 2 && !/\d/.test(parts[0])) {
+    return `${parts[0]}, ${stripZip(parts[1])}`;
+  }
+  return null;
+}
+
+/** Holds the post-OAuth destination across the Discord round trip. */
+export const NEXT_COOKIE = "spuds_next";
+
+/**
+ * Where to send someone after auth. Only same-site paths — anything else
+ * (absolute URLs, protocol-relative "//evil.com", backslash tricks) is an
+ * open redirect, so it falls back.
+ */
+export function safeNext(
+  value: string | null | undefined,
+  fallback = "/discover"
+) {
+  if (
+    !value ||
+    !value.startsWith("/") ||
+    /^\/[/\\]/.test(value) ||
+    // Browsers drop tabs/newlines, so "/\t/evil.com" would become "//evil.com".
+    /[\x00-\x1f]/.test(value)
+  ) {
+    return fallback;
+  }
+  return value;
+}
+
 export function initials(name: string) {
   return name
     .split(/\s+/)

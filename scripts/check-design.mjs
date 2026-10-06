@@ -10,7 +10,7 @@ const SRC = join(ROOT, "src");
 const WHITELIST = new Set([
   "src/app/page.tsx", // landing mascot
   "src/lib/constants.ts", // reputation badges
-  "src/app/(app)/events/[id]/review-form.tsx", // confirmation moment
+  "src/app/(public)/events/[id]/review-form.tsx", // confirmation moment
   "src/app/(app)/discover/page.tsx", // greeting + empty states
   "src/app/(app)/communities/page.tsx", // empty state
   "src/app/(app)/create/manage/page.tsx", // empty state

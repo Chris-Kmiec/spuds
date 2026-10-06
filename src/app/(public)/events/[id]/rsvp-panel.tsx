@@ -13,6 +13,7 @@ export function RsvpPanel({
   waitlistPosition,
   isHost,
   isPast,
+  autoOpen = false,
 }: {
   eventId: string;
   myStatus: "going" | "waitlist" | "cancelled" | null;
@@ -20,9 +21,11 @@ export function RsvpPanel({
   waitlistPosition: number | null;
   isHost: boolean;
   isPast: boolean;
+  /** Open straight to the RSVP sheet (arriving back from sign-up). */
+  autoOpen?: boolean;
 }) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(autoOpen);
   const [guests, setGuests] = useState(0);
   const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
