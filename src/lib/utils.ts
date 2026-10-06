@@ -153,6 +153,32 @@ export function areaFromAddress(address: string | null | undefined) {
   return null;
 }
 
+/**
+ * The host's ready-to-paste invite, e.g. "Hosting Smash Night at Logan
+ * Arcade. Thu, Oct 8 at 6:00 PM CDT. 28 spots open, come through!"
+ * Names the venue or the city — never the street, since it goes public.
+ */
+export function invitePitch(party: {
+  title: string;
+  start_time: string;
+  timezone: string;
+  location_name: string | null;
+  address: string | null;
+  capacity: number;
+  going: number;
+}) {
+  const where = party.location_name?.trim() || areaFromAddress(party.address);
+  const when = `${formatEventDate(party.start_time, party.timezone)} at ${formatEventTime(party.start_time, party.timezone)} ${timeZoneLabel(party.start_time, party.timezone)}`;
+  const spots = Math.max(0, party.capacity - party.going);
+  const call =
+    spots === 0
+      ? "It's full, but the waitlist is open."
+      : spots === 1
+        ? "1 spot left, grab it!"
+        : `${spots} spots open, come through!`;
+  return `Hosting ${party.title}${where ? ` at ${where}` : ""}. ${when}. ${call}`;
+}
+
 /** Holds the post-OAuth destination across the Discord round trip. */
 export const NEXT_COOKIE = "spuds_next";
 

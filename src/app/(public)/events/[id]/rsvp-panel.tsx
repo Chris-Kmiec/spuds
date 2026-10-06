@@ -36,13 +36,19 @@ export function RsvpPanel({
   if (isHost) {
     return (
       <div className="above-nav fixed inset-x-0 z-30 border-t border-soil-800/5 bg-white/95 p-4 backdrop-blur">
-        <div className="mx-auto max-w-xl">
+        <div className="mx-auto flex max-w-xl gap-2">
           <Button
-            className="w-full"
+            className="flex-1"
             variant="outline"
             onClick={() => router.push("/create/manage")}
           >
-            Manage your party
+            Manage
+          </Button>
+          <Button
+            className="flex-1"
+            onClick={() => router.push(`/events/${eventId}/share`)}
+          >
+            Invite people
           </Button>
         </div>
       </div>

@@ -7,6 +7,7 @@ import {
   formatEventTime,
   formatPrice,
   initials,
+  invitePitch,
   safeNext,
   timeZoneLabel,
   utcToZonedFields,
@@ -180,5 +181,35 @@ describe("safeNext", () => {
   it("falls back when missing", () => {
     expect(safeNext(null)).toBe("/discover");
     expect(safeNext("", "/onboarding")).toBe("/onboarding");
+  });
+});
+
+describe("invitePitch", () => {
+  const party = {
+    title: "Smash Night",
+    // 6 PM in Chicago (CDT) on Thu, Oct 8 2026.
+    start_time: "2026-10-08T23:00:00Z",
+    timezone: "America/Chicago",
+    location_name: "Logan Arcade",
+    address: "2410 W Fullerton Ave, Chicago, IL",
+    capacity: 32,
+    going: 4,
+  };
+
+  it("reads like a host wrote it, in the venue's time", () => {
+    expect(invitePitch(party)).toBe(
+      "Hosting Smash Night at Logan Arcade. Thu, Oct 8 at 6:00 PM CDT. 28 spots open, come through!"
+    );
+  });
+
+  it("names the city, never the street, when there's no venue name", () => {
+    const pitch = invitePitch({ ...party, location_name: null });
+    expect(pitch).toContain("at Chicago, IL.");
+    expect(pitch).not.toContain("Fullerton");
+  });
+
+  it("matches the urgency to the spots left", () => {
+    expect(invitePitch({ ...party, going: 31 })).toContain("1 spot left");
+    expect(invitePitch({ ...party, going: 32 })).toContain("waitlist is open");
   });
 });

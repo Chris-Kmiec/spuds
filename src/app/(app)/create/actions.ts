@@ -72,7 +72,8 @@ export async function createEvent(input: NewEventInput) {
   if (error) return { error: error.message };
 
   revalidatePath("/discover");
-  redirect(`/events/${data.id}`);
+  // Straight to sharing: this is when a host is most likely to post it.
+  redirect(`/events/${data.id}/share?new=1`);
 }
 
 export type EditEventInput = {

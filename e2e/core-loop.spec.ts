@@ -131,6 +131,26 @@ test.describe("core loop", () => {
     await expect(page.locator("main")).not.toContainText("New to Spuds?");
   });
 
+  test("hosts get a ready-to-paste invite for their party", async ({
+    page,
+  }) => {
+    // Petey hosts the demo Smash party.
+    await page.goto(`/events/${SMASH}`);
+    await page.getByRole("button", { name: "Invite people" }).click();
+    await page.waitForURL(`**/events/${SMASH}/share`);
+    await expect(
+      page.getByRole("heading", { name: "Share your party" })
+    ).toBeVisible();
+
+    const invite = page.getByRole("textbox");
+    await expect(invite).toHaveValue(/^Hosting Smash Ultimate Weekly/);
+    await expect(invite).toHaveValue(new RegExp(`/events/${SMASH}$`));
+    await expect(invite).not.toHaveValue(/Fullerton/);
+
+    const preview = await page.request.get(`/events/${SMASH}/share/preview`);
+    expect(preview.headers()["content-type"]).toBe("image/png");
+  });
+
   test("map view renders pins", async ({ page }) => {
     await page.goto("/discover?view=map");
     await expect(page.locator("main")).toContainText(/part(y|ies) on the map/);
