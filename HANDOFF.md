@@ -19,7 +19,7 @@ can pick up cold. Last updated: 2026-10-06.
 | Discover | Personalized feed, search, Weekdays/Weekends + party-type filters, distance |
 | Map view | Mapbox, type-specific pins (gamepad / dice / TV), Zillow-style bottom sheet |
 | Parties | Detail page, RSVP with guests + message, capacity-aware waitlist |
-| Sharing | **Party pages are public** (no account needed), rich Discord/iMessage previews (`opengraph-image.tsx`), Share button; sign-up/Discord/onboarding all return to the party with the RSVP sheet open |
+| Sharing | **Party pages are public** (no account needed), rich Discord/iMessage previews (`lib/party-preview.tsx`), Share button; sign-up/Discord/onboarding all return to the party with the RSVP sheet open. Publishing lands hosts on `/events/:id/share` (preview card + ready-to-paste invite); "Invite people" brings them back |
 | Waitlist | **Auto-promotion** when a spot frees up, and when a host raises capacity |
 | Hosting | Create wizard, **edit party**, host dashboard w/ attendees + stats, cancel |
 | Photos | Uploads for party covers, avatars, community banners (Supabase Storage) |
