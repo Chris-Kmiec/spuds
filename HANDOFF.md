@@ -5,8 +5,8 @@ can pick up cold. Last updated: 2026-10-06.
 
 - **Live:** https://getspuds.com (also www → apex redirect)
 - **Repo:** https://github.com/Chris-Kmiec/spuds (`main`)
-- **Deploy:** `npx vercel deploy --prod --yes --token <token>` from Windows
-  (GitHub auto-deploy is *not* connected yet — see Open items)
+- **Deploy:** automatic — every push to `main` deploys to production via
+  Vercel's GitHub integration (confirmed 2026-10-06). No CLI login needed.
 
 ---
 
@@ -76,7 +76,6 @@ against production after a push to `main`.
 **Needs the user (dashboard access):**
 - [ ] Add `SUPABASE_SERVICE_ROLE_KEY` to Vercel — only the day-before reminder
       cron needs it; everything else already works.
-- [ ] Connect the GitHub repo in Vercel → Settings → Git for auto-deploys.
 
 **Open question (product):** the exact address is still visible to *any*
 signed-in user, not just people who RSVP'd. Fine for venues; worth gating
